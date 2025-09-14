@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moodle XML Quiz Converter</title>
+    <script src="https://cdn.tiny.cloud/1/77hf2rpmdbg9kr1u3pc0mtubhufo2i7u9syer0ulphm40zl7/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 400px;
+        }
+        
+        .output-section {
+            flex: 1;
+            min-width: 400px;
+        }
+        
+        .section-title {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .question-input {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="text"], textarea, input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        textarea {
+            min-height: 200px;
+            font-family: monospace;
+        }
+        
+        .feedback-textarea {
+            min-height: 100px;
+        }
+        
+        .choices-container {
+            margin-top: 10px;
+        }
+        
+        .choice-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        
+        .choice-input input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .correct-checkbox {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .percentage-input {
+            width: 70px !important;
+            margin-right: 10px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-add {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-add:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-remove {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-remove:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-generate {
+            background-color: #2ecc71;
+            color: white;
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        
+        .btn-generate:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-copy {
+            background-color: #9b59b6;
+            color: white;
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        
+        .btn-copy:hover {
+            background-color: #8e44ad;
+        }
+        
+        .question-type {
+            margin-bottom: 15px;
+        }
+        
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .instructions {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .question-list {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        
+        .question-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .question-item:last-child {
+            border-bottom: none;
+        }
+        
+        .question-item.active {
+            background-color: #e3f2fd;
+            border-radius: 4px;
+        }
+        
+        .question-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .question-actions button {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        
+        .tox-tinymce {
+            border-radius: 4px !important;
+            margin-bottom: 15px;
+        }
+        
+        .question-counter {
+            background-color: #3498db;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        
+        .question-name-input {
+            margin-bottom: 15px;
+        }
+        
+        .question-grade-input {
+            margin-bottom: 15px;
+        }
+        
+        .grade-input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .grade-input-container input {
+            width: 80px;
+        }
+        
+        .total-grade {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .percentage-info {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .feedback-section {
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .choice-input {
+                flex-wrap: wrap;
+            }
+            
+            .percentage-input {
+                margin-top: 5px;
+                margin-left: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Moodle XML Quiz Converter</h1>
+            <p class="description">Convert your questions and answers to Moodle XML format for easy import</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <div class="section-title">
+                    <span>Question Input</span>
+                    <span class="question-counter" id="question-counter">0 questions</span>
+                </div>
+                
+                <div class="question-name-input">
+                    <label for="question-name">Question Name:</label>
+                    <input type="text" id="question-name" placeholder="Enter a name for this question...">
+                </div>
+                
+                <div class="question-grade-input">
+                    <label for="question-grade">Question Grade (Points):</label>
+                    <div class="grade-input-container">
+                        <input type="number" id="question-grade" min="0" step="0.5" value="5.0">
+                        <span>points</span>
+                    </div>
+                </div>
+                
+                <div class="question-type">
+                    <label for="question-type">Question Type:</label>
+                    <select id="question-type">
+                        <option value="multichoice">Multiple Choice</option>
+                        <option value="truefalse">True/False</option>
+                        <option value="shortanswer">Short Answer</option>
+                        <option value="essay">Essay</option>
+                    </select>
+                </div>
+                
+                <div class="question-input">
+                    <label for="question-text">Question Text:</label>
+                    <textarea id="question-text" placeholder="Enter your question here..."></textarea>
+                </div>
+                
+                <div class="feedback-section">
+                    <label for="general-feedback">General Feedback (shown after question is answered):</label>
+                    <textarea id="general-feedback" class="feedback-textarea" placeholder="Enter feedback that will be shown after the question is answered..."></textarea>
+                </div>
+                
+                <div id="choices-section">
+                    <label>Choices:</label>
+                    <div class="percentage-info">Set percentage for each choice (e.g., 100 for fully correct, 50 for partially correct, 0 for incorrect)</div>
+                    <div id="choices-container" class="choices-container">
+                        <div class="choice-input">
+                            <input type="checkbox" class="correct-checkbox">
+                            <input type="text" class="choice-text" placeholder="Enter choice text...">
+                            <input type="number" class="percentage-input" min="0" max="100" value="0" step="5">
+                            <span>%</span>
+                            <button class="btn-remove">×</button>
+                        </div>
+                        <div class="choice-input">
+                            <input type="checkbox" class="correct-checkbox">
+                            <input type="text" class="choice-text" placeholder="Enter choice text...">
+                            <input type="number" class="percentage-input" min="0" max="100" value="0" step="5">
+                            <span>%</span>
+                            <button class="btn-remove">×</button>
+                        </div>
+                        <div class="choice-input">
+                            <input type="checkbox" class="correct-checkbox">
+                            <input type="text" class="choice-text" placeholder="Enter choice text...">
+                            <input type="number" class="percentage-input" min="0" max="100" value="0" step="5">
+                            <span>%</span>
+                            <button class="btn-remove">×</button>
+                        </div>
+                        <div class="choice-input">
+                            <input type="checkbox" class="correct-checkbox">
+                            <input type="text" class="choice-text" placeholder="Enter choice text...">
+                            <input type="number" class="percentage-input" min="0" max="100" value="0" step="5">
+                            <span>%</span>
+                            <button class="btn-remove">×</button>
+                        </div>
+                        <div class="choice-input">
+                            <input type="checkbox" class="correct-checkbox">
+                            <input type="text" class="choice-text" placeholder="Enter choice text...">
+                            <input type="number" class="percentage-input" min="0" max="100" value="0" step="5">
+                            <span>%</span>
+                            <button class="btn-remove">×</button>
+                        </div>
+                    </div>
+                    
+                    <div class="buttons">
+                        <button class="btn-add" id="add-choice">Add Choice</button>
+                    </div>
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn-add" id="add-question">Add Question</button>
+                    <button class="btn-generate" id="generate-xml">Generate XML</button>
+                </div>
+                
+                <div class="total-grade" id="total-grade">
+                    Total Grade: 0 points
+                </div>
+                
+                <div class="question-list" id="question-list">
+                    <p style="text-align: center; padding: 20px; color: #7f8c8d;">No questions added yet</p>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <div class="section-title">XML Output</div>
+                <textarea id="xml-output" readonly placeholder="Your XML will appear here..."></textarea>
+                <button class="btn-copy" id="copy-xml">Copy XML to Clipboard</button>
+                
+                <div class="instructions">
+                    <h3>How to use this converter:</h3>
+                    <ul>
+                        <li>Enter a name for your question (required for Moodle)</li>
+                        <li>Set the grade/point value for the question</li>
+                        <li>Select the question type from the dropdown</li>
+                        <li>Enter your question in the question text area</li>
+                        <li>Add general feedback that will be shown after the question is answered</li>
+                        <li>For multiple choice questions, add choices and set percentage values</li>
+                        <li>Click "Add Question" to add it to your quiz</li>
+                        <li>Click "Generate XML" to create the Moodle XML code</li>
+                        <li>Copy the XML and import it into Moodle</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize TinyMCE for question text
+        tinymce.init({
+            selector: '#question-text',
+            plugins: 'lists link image table code help wordcount',
+            toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code help',
+            height: 200,
+            setup: function (editor) {
+                editor.on('change', function () {
+                    editor.save();
+                });
+            }
+        });
+
+        // Initialize TinyMCE for general feedback
+        tinymce.init({
+            selector: '#general-feedback',
+            plugins: 'lists link image table code help wordcount',
+            toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code help',
+            height: 150,
+            setup: function (editor) {
+                editor.on('change', function () {
+                    editor.save();
+                });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const questionName = document.getElementById('question-name');
+            const questionGrade = document.getElementById('question-grade');
+            const questionType = document.getElementById('question-type');
+            const questionText = document.getElementById('question-text');
+            const generalFeedback = document.getElementById('general-feedback');
+            const choicesContainer = document.getElementById('choices-container');
+            const addChoiceButton = document.getElementById('add-choice');
+            const addQuestionButton = document.getElementById('add-question');
+            const generateXmlButton = document.getElementById('generate-xml');
+            const xmlOutput = document.getElementById('xml-output');
+            const copyXmlButton = document.getElementById('copy-xml');
+            const choicesSection = document.getElementById('choices-section');
+            const questionList = document.getElementById('question-list');
+            const questionCounter = document.getElementById('question-counter');
+            const totalGradeElement = document.getElementById('total-grade');
+            
+            let questions = [];
+            let currentQuestionId = null;
+            
+            // Toggle choices visibility based on question type
+            questionType.addEventListener('change', function() {
+                if (questionType.value === 'multichoice') {
+                    choicesSection.style.display = 'block';
+                } else {
+                    choicesSection.style.display = 'none';
+                }
+            });
+            
+            // Add new choice input
+            addChoiceButton.addEventListener('click', function() {
+                const choiceInput = document.createElement('div');
+                choiceInput.className = 'choice-input';
+                choiceInput.innerHTML = `
+                    <input type="checkbox" class="correct-checkbox">
+                    <input type="text" class="choice-text" placeholder="Enter choice text...">
+                    <input type="number" class="percentage-input" min="0" max="100" value="0" step="5">
+                    <span>%</span>
+                    <button class="btn-remove">×</button>
+                `;
+                choicesContainer.appendChild(choiceInput);
+                
+                // Add event listener to remove button
+                choiceInput.querySelector('.btn-remove').addEventListener('click', function() {
+                    if (choicesContainer.querySelectorAll('.choice-input').length > 1) {
+                        choicesContainer.removeChild(choiceInput);
+                    } else {
+                        alert('You need at least one choice');
+                    }
+                });
+                
+                // Add event listener to checkbox to auto-set percentage
+                const checkbox = choiceInput.querySelector('.correct-checkbox');
+                const percentageInput = choiceInput.querySelector('.percentage-input');
+                
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        percentageInput.value = '100';
+                    } else {
+                        percentageInput.value = '0';
+                    }
+                });
+            });
+            
+            // Add event listeners to existing checkboxes
+            document.querySelectorAll('.correct-checkbox').forEach(checkbox => {
+                const percentageInput = checkbox.parentElement.querySelector('.percentage-input');
+                
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        percentageInput.value = '100';
+                    } else {
+                        percentageInput.value = '0';
+                    }
+                });
+            });
+            
+            // Add question to list
+            addQuestionButton.addEventListener('click', function() {
+                const name = questionName.value.trim();
+                const grade = parseFloat(questionGrade.value);
+                const type = questionType.value;
+                const text = tinymce.get('question-text').getContent().trim();
+                const feedback = tinymce.get('general-feedback').getContent().trim();
+                
+                if (!name) {
+                    alert('Please enter a question name');
+                    return;
+                }
+                
+                if (isNaN(grade) || grade <= 0) {
+                    alert('Please enter a valid grade value greater than 0');
+                    return;
+                }
+                
+                if (!text) {
+                    alert('Please enter a question');
+                    return;
+                }
+                
+                let questionData = {
+                    id: currentQuestionId || Date.now(),
+                    name: name,
+                    grade: grade,
+                    type: type,
+                    text: text,
+                    feedback: feedback
+                };
+                
+                if (type === 'multichoice') {
+                    const choices = [];
+                    const choiceInputs = choicesContainer.querySelectorAll('.choice-input');
+                    
+                    if (choiceInputs.length === 0) {
+                        alert('Please add at least one choice for multiple choice question');
+                        return;
+                    }
+                    
+                    let hasCorrect = false;
+                    
+                    choiceInputs.forEach(input => {
+                        const choiceText = input.querySelector('.choice-text').value.trim();
+                        const percentage = parseFloat(input.querySelector('.percentage-input').value);
+                        const isCorrect = input.querySelector('.correct-checkbox').checked;
+                        
+                        if (choiceText) {
+                            choices.push({ text: choiceText, percentage: percentage, correct: isCorrect });
+                            if (percentage > 0) hasCorrect = true;
+                        }
+                    });
+                    
+                    if (choices.length === 0) {
+                        alert('Please add at least one choice');
+                        return;
+                    }
+                    
+                    if (!hasCorrect) {
+                        alert('Please set at least one choice with a percentage greater than 0');
+                        return;
+                    }
+                    
+                    questionData.choices = choices;
+                }
+                
+                // Update existing question or add new one
+                if (currentQuestionId) {
+                    const index = questions.findIndex(q => q.id === currentQuestionId);
+                    if (index !== -1) {
+                        questions[index] = questionData;
+                    }
+                } else {
+                    questions.push(questionData);
+                }
+                
+                renderQuestionList();
+                clearForm();
+                currentQuestionId = null;
+            });
+            
+            // Generate XML
+            generateXmlButton.addEventListener('click', function() {
+                if (questions.length === 0) {
+                    alert('Please add at least one question');
+                    return;
+                }
+                
+                let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<quiz>';
+                
+                questions.forEach(question => {
+                    if (question.type === 'multichoice') {
+                        xml += generateMultipleChoiceXML(question.name, question.grade, question.text, question.feedback, question.choices);
+                    } else if (question.type === 'truefalse') {
+                        xml += generateTrueFalseXML(question.name, question.grade, question.text, question.feedback);
+                    } else if (question.type === 'shortanswer') {
+                        xml += generateShortAnswerXML(question.name, question.grade, question.text, question.feedback);
+                    } else if (question.type === 'essay') {
+                        xml += generateEssayXML(question.name, question.grade, question.text, question.feedback);
+                    }
+                });
+                
+                xml += '\n</quiz>';
+                xmlOutput.value = xml;
+            });
+            
+            // Copy XML to clipboard
+            copyXmlButton.addEventListener('click', function() {
+                if (!xmlOutput.value) {
+                    alert('No XML to copy. Please generate XML first.');
+                    return;
+                }
+                
+                xmlOutput.select();
+                document.execCommand('copy');
+                alert('XML copied to clipboard!');
+            });
+            
+            // Render question list
+            function renderQuestionList() {
+                if (questions.length === 0) {
+                    questionList.innerHTML = '<p style="text-align: center; padding: 20px; color: #7f8c8d;">No questions added yet</p>';
+                    questionCounter.textContent = '0 questions';
+                    totalGradeElement.textContent = 'Total Grade: 0 points';
+                    return;
+                }
+                
+                questionList.innerHTML = '';
+                questionCounter.textContent = `${questions.length} question${questions.length !== 1 ? 's' : ''}`;
+                
+                let totalGrade = 0;
+                
+                questions.forEach(question => {
+                    totalGrade += question.grade;
+                    
+                    const questionItem = document.createElement('div');
+                    questionItem.className = 'question-item';
+                    if (question.id === currentQuestionId) {
+                        questionItem.classList.add('active');
+                    }
+                    
+                    const truncatedName = question.name.length > 20 ? question.name.substring(0, 20) + '...' : question.name;
+                    
+                    questionItem.innerHTML = `
+                        <div>
+                            <strong>${truncatedName}</strong> (${question.type})
+                            <div>Grade: ${question.grade} points</div>
+                        </div>
+                        <div class="question-actions">
+                            <button class="btn-add edit-btn">Edit</button>
+                            <button class="btn-remove delete-btn">Delete</button>
+                        </div>
+                    `;
+                    
+                    questionItem.querySelector('.edit-btn').addEventListener('click', function() {
+                        editQuestion(question.id);
+                    });
+                    
+                    questionItem.querySelector('.delete-btn').addEventListener('click', function() {
+                        deleteQuestion(question.id);
+                    });
+                    
+                    questionList.appendChild(questionItem);
+                });
+                
+                totalGradeElement.textContent = `Total Grade: ${totalGrade} points`;
+            }
+            
+            // Edit question
+            function editQuestion(id) {
+                const question = questions.find(q => q.id === id);
+                if (!question) return;
+                
+                currentQuestionId = id;
+                questionName.value = question.name;
+                questionGrade.value = question.grade;
+                questionType.value = question.type;
+                tinymce.get('question-text').setContent(question.text);
+                tinymce.get('general-feedback').setContent(question.feedback || '');
+                
+                if (question.type === 'multichoice') {
+                    choicesSection.style.display = 'block';
+                    choicesContainer.innerHTML = '';
+                    
+                    question.choices.forEach(choice => {
+                        const choiceInput = document.createElement('div');
+                        choiceInput.className = 'choice-input';
+                        choiceInput.innerHTML = `
+                            <input type="checkbox" class="correct-checkbox" ${choice.correct ? 'checked' : ''}>
+                            <input type="text" class="choice-text" value="${escapeHTML(choice.text)}" placeholder="Enter choice text...">
+                            <input type="number" class="percentage-input" min="0" max="100" value="${choice.percentage}" step="5">
+                            <span>%</span>
+                            <button class="btn-remove">×</button>
+                        `;
+                        choicesContainer.appendChild(choiceInput);
+                        
+                        // Add event listener to checkbox
+                        const checkbox = choiceInput.querySelector('.correct-checkbox');
+                        const percentageInput = choiceInput.querySelector('.percentage-input');
+                        
+                        checkbox.addEventListener('change', function() {
+                            if (this.checked) {
+                                percentageInput.value = '100';
+                            } else {
+                                percentageInput.value = '0';
+                            }
+                        });
+                        
+                        choiceInput.querySelector('.btn-remove').addEventListener('click', function() {
+                            if (choicesContainer.querySelectorAll('.choice-input').length > 1) {
+                                choicesContainer.removeChild(choiceInput);
+                            } else {
+                                alert('You need at least one choice');
+                            }
+                        });
+                    });
+                } else {
+                    choicesSection.style.display = 'none';
+                }
+                
+                renderQuestionList();
+            }
+            
+            // Delete question
+            function deleteQuestion(id) {
+                questions = questions.filter(q => q.id !== id);
+                if (currentQuestionId === id) {
+                    clearForm();
+                    currentQuestionId = null;
+                }
+                renderQuestionList();
+            }
+            
+            // Clear form
+            function clearForm() {
+                questionName.value = '';
+                questionGrade.value = '5.0';
+                tinymce.get('question-text').setContent('');
+                tinymce.get('general-feedback').setContent('');
+                choicesContainer.innerHTML = `
+                    <div class="choice-input">
+                        <input type="checkbox" class="correct-checkbox">
+                        <input type="text" class="choice-text" placeholder="Enter choice text...">
+                        <input type="number" class="percentage-input" min="0" max="100" value="0" step="5">
+                        <span>%</span>
+                        <button class="btn-remove">×</button>
+                    </div>
+                    <div class="choice-input">
+                        <input type="checkbox" class="correct-checkbox">
+                        <input type="text" class="choice-text" placeholder="Enter choice text...">
+                        <input type="number" class="percentage-input" min="0" max="100" value="0" step="5">
+                        <span>%</span>
+                        <button class="btn-remove">×</button>
+                    </div>
+                    <div class="choice-input">
+                        <input type="checkbox" class="correct-checkbox">
+                        <input type="text" class="choice-text" placeholder="Enter choice text...">
+                        <input type="number" class="percentage-input" min="0" max="100" value="0" step="5">
+                        <span>%</span>
+                        <button class="btn-remove">×</button>
+                    </div>
+                    <div class="choice-input">
+                        <input type="checkbox" class="correct-checkbox">
+                        <input type="text" class="choice-text" placeholder="Enter choice text...">
+                        <input type="number" class="percentage-input" min="0" max="100" value="0" step="5">
+                        <span>%</span>
+                        <button class="btn-remove">×</button>
+                    </div>
+                    <div class="choice-input">
+                        <input type="checkbox" class="correct-checkbox">
+                        <input type="text" class="choice-text" placeholder="Enter choice text...">
+                        <input type="number" class="percentage-input" min="0" max="100" value="0" step="5">
+                        <span>%</span>
+                        <button class="btn-remove">×</button>
+                    </div>
+                `;
+                
+                // Add event listeners to remove buttons and checkboxes
+                choicesContainer.querySelectorAll('.btn-remove').forEach(button => {
+                    button.addEventListener('click', function() {
+                        if (choicesContainer.querySelectorAll('.choice-input').length > 1) {
+                            choicesContainer.removeChild(button.parentElement);
+                        } else {
+                            alert('You need at least one choice');
+                        }
+                    });
+                });
+                
+                choicesContainer.querySelectorAll('.correct-checkbox').forEach(checkbox => {
+                    const percentageInput = checkbox.parentElement.querySelector('.percentage-input');
+                    
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            percentageInput.value = '100';
+                        } else {
+                            percentageInput.value = '0';
+                        }
+                    });
+                });
+            }
+            
+            // XML generation functions
+            function generateMultipleChoiceXML(questionName, questionGrade, questionText, feedback, choices) {
+                let xml = `
+  <question type="multichoice">
+    <name>
+      <text>${escapeXML(questionName)}</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[${questionText}]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[${feedback || ''}]]></text>
+    </generalfeedback>
+    <defaultgrade>${questionGrade.toFixed(7)}</defaultgrade>
+    <penalty>0</penalty>
+    <hidden>0</hidden>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>ABCD</answernumbering>
+    <correctfeedback format="html">
+      <text>Your answer is correct.</text>
+    </correctfeedback>
+    <partiallycorrectfeedback format="html">
+      <text>Your answer is partially correct.</text>
+    </partiallycorrectfeedback>
+    <incorrectfeedback format="html">
+      <text>Your answer is incorrect.</text>
+    </incorrectfeedback>`;
+                
+                choices.forEach((choice, index) => {
+                    xml += `
+    <answer fraction="${choice.percentage}" format="html">
+      <text><![CDATA[${choice.text}]]></text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>`;
+                });
+                
+                xml += `
+  </question>`;
+                return xml;
+            }
+            
+            function generateTrueFalseXML(questionName, questionGrade, questionText, feedback) {
+                return `
+  <question type="truefalse">
+    <name>
+      <text>${escapeXML(questionName)}</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[${questionText}]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[${feedback || ''}]]></text>
+    </generalfeedback>
+    <defaultgrade>${questionGrade.toFixed(7)}</defaultgrade>
+    <penalty>0</penalty>
+    <hidden>0</hidden>
+    <answer fraction="100" format="moodle_auto_format">
+      <text>true</text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="moodle_auto_format">
+      <text>false</text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+  </question>`;
+            }
+            
+            function generateShortAnswerXML(questionName, questionGrade, questionText, feedback) {
+                return `
+  <question type="shortanswer">
+    <name>
+      <text>${escapeXML(questionName)}</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[${questionText}]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[${feedback || ''}]]></text>
+    </generalfeedback>
+    <defaultgrade>${questionGrade.toFixed(7)}</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <usecase>0</usecase>
+    <answer fraction="100" format="moodle_auto_format">
+      <text>answer</text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+  </question>`;
+            }
+            
+            function generateEssayXML(questionName, questionGrade, questionText, feedback) {
+                return `
+  <question type="essay">
+    <name>
+      <text>${escapeXML(questionName)}</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[${questionText}]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[${feedback || ''}]]></text>
+    </generalfeedback>
+    <defaultgrade>${questionGrade.toFixed(7)}</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <responseformat>editor</responseformat>
+    <responserequired>1</responserequired>
+    <responsefieldlines>15</responsefieldlines>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+  </question>`;
+            }
+            
+            function escapeXML(string) {
+                return string.replace(/&/g, '&amp;')
+                             .replace(/</g, '&lt;')
+                             .replace(/>/g, '&gt;')
+                             .replace(/"/g, '&quot;')
+                             .replace(/'/g, '&apos;');
+            }
+            
+            function escapeHTML(string) {
+                return string.replace(/&/g, '&amp;')
+                             .replace(/</g, '&lt;')
+                             .replace(/>/g, '&gt;')
+                             .replace(/"/g, '&quot;')
+                             .replace(/'/g, '&#039;');
+            }
+            
+            // Add event listeners to initial remove buttons and checkboxes
+            choicesContainer.querySelectorAll('.btn-remove').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (choicesContainer.querySelectorAll('.choice-input').length > 1) {
+                        choicesContainer.removeChild(button.parentElement);
+                    } else {
+                        alert('You need at least one choice');
+                    }
+                });
+            });
+            
+            choicesContainer.querySelectorAll('.correct-checkbox').forEach(checkbox => {
+                const percentageInput = checkbox.parentElement.querySelector('.percentage-input');
+                
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        percentageInput.value = '100';
+                    } else {
+                        percentageInput.value = '0';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
