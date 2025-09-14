@@ -1063,6 +1063,7 @@ rect.legend-mouseover-inactive,
         <input type="file" id="fileInput" accept=".xlsx" class="input block w-full text-sm text-gray-700 border rounded p-2 mb-5">
         <input type="text" id="category" placeholder="Category (optional)" class="input block w-full text-sm text-gray-700 border rounded p-2 mb-5">
         <button onclick="convertFile()" class="btn btn-primary px-4 py-2 rounded">Convert to Moodle XML</button>
+        <button onclick="resetForm()" class="btn btn-danger px-4 py-2 rounded ml-2">Reset</button>
         <p id="status" class="mt-4 text-green-600"></p>
       </div>
           </div>
@@ -2977,6 +2978,16 @@ rect.legend-mouseover-inactive,
 </div>
 <!-- Script Converter -->
   <script>
+    function resetForm() {
+      // reset file input
+      document.getElementById('fileInput').value = '';
+      // reset kategori
+      document.getElementById('category').value = '';
+      // reset status
+      document.getElementById('status').innerText = '';
+    }
+  </script>
+  <script>
     function convertMarkupToHtml(text) {
       if (!text) return "";
       let t = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").replace(/\[br\]/g, "\n");
@@ -2985,7 +2996,6 @@ rect.legend-mouseover-inactive,
       t = t.replace(/(^|[^*])\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "$1<em>$2</em>");
       return t.replace(/\n/g, "<br/>");
     }
-
     function createQuestionXML(row, index, categoryName, xmlDoc) {
       let q = xmlDoc.createElement("question");
       q.setAttribute("type", "multichoice");
@@ -3045,7 +3055,21 @@ rect.legend-mouseover-inactive,
 
       return q;
     }
+    function convertFile() {
+      const fileInput = document.getElementById('fileInput');
+      const category = document.getElementById('category').value.trim();
+      const statusEl = document.getElementById('status');
 
+      if (!fileInput.files.length) {
+        statusEl.innerText = "Please select a file first.";
+        return;
+      }
+
+      const file = fileInput.files[0];
+      statusEl.innerText = "Processing " + file.name + " with category: " + (category || "None");
+
+      // TODO: fungsi konversi ke Moodle XML kamu disini
+    }
     function convertFile() {
       let file = document.getElementById("fileInput").files[0];
       if (!file) return alert("Upload Excel file dulu!");
