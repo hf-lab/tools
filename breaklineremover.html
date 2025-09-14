@@ -1047,7 +1047,7 @@ rect.legend-mouseover-inactive,
    <!-- Toolbar -->
    <div class="">
     <!-- Container -->
-    <div class="container-fixed">
+    <div class="container-fixed text-base">
      <div class="card">
         <div class="card-header">
             <h3 class="card-title">Line Break Remover</h3>
@@ -1058,7 +1058,7 @@ rect.legend-mouseover-inactive,
             <div class="tool-section">
                 <label class="label">Input Text</label>
                 <div class="textarea-container">
-                    <textarea class="textarea text-base " rows="15"
+                    <textarea class="textarea text-base" rows="15"
                         id="inputText" 
                         placeholder="Paste your text with line breaks here... This is an example of text with multiple line breaks that can be removed using this tool."
                     ></textarea>
@@ -1089,34 +1089,30 @@ rect.legend-mouseover-inactive,
             </div>
 
             <div class="grid h-20 grid-cols-3 place-content-center gap-5">
-                <button class="btn btn-primary" onclick="processText()">Remove Line Breaks</button>
-                <button class="btn btn-secondary" onclick="copyOutput()">Copy Output</button>
-                <button class="btn btn-danger" onclick="clearAll()">Clear All</button>
+                <button class="btn btn-primary text-base" onclick="processText()">Remove Line Breaks</button>
+                <button class="btn btn-secondary text-base" onclick="copyOutput()">Copy Output</button>
+                <button class="btn btn-danger text-base" onclick="clearAll()">Clear All</button>
             </div>
             <div class="grid grid-cols-3 gap-4">
                 <div class="badge badge-success badge-lg p-3">
-                    <div class="stat-number text-[14px]"  id="linesRemoved">0</div>
-                    <div class="stat-label"> &nbsp;Lines Removed</div>
+                    <div class="stat-number text-2xl"  id="linesRemoved">0</div>
+                    <div class="stat-label text-2xl"> &nbsp;Lines Removed</div>
                 </div>
                  <div class="badge badge-info p-3 badge-lg">
-                    <div class="stat-number text-[14px]" id="charactersProcessed">0</div>
-                    <div class="stat-label"> &nbsp;Characters Processed</div>
+                    <div class="stat-number text-2xl" id="charactersProcessed">0</div>
+                    <div class="stat-label text-2xl"> &nbsp;Characters Processed</div>
                 </div>
                 <div class="badge badge-warning p-3 badge-lg">
-                    <div class="stat-number text-[14px]" id="wordsProcessed">0</div>
-                    <div class="stat-label"> &nbsp;Words Processed</div>
+                    <div class="stat-number text-2xl" id="wordsProcessed">0</div>
+                    <div class="stat-label text-2xl"> &nbsp;Words Processed</div>
                 </div>
-            </div>
-            <div class="stats" id="stats" style="display: none;">
-                
-               
             </div>
 
             <div class="tool-section">
                 <label class="label">Output Text</label>
                 <div class="textarea-container">
                     <textarea 
-                        class="textarea text-base" rows="15" id="outputText" 
+                        class="textarea" rows="15" id="outputText" 
                         placeholder="Processed text will appear here..."
                         readonly
                     ></textarea>
