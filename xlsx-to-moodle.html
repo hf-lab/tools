@@ -1,6 +1,6 @@
 <html class="h-full light hentry" data-theme="true" dir="ltr" lang="en" data-theme-mode="light"><head><base href="../../">
   <title>
-   Universal JSON → XLSX Converter | Online Toolbox
+   Excel - Moodle XML | Online Toolbox
   </title>
   <meta charset="utf-8">
   <meta content="follow, index" name="robots">
@@ -1054,25 +1054,17 @@ rect.legend-mouseover-inactive,
  <div class="card">
          <div class="card-header">
           <h3 class="card-title">
-           Universal JSON → XLSX Converter
+           Excel → Moodle XML Converter
           </h3>
          </div>
          <div class="card-body grid gap-5 lg:gap-7.5 lg:py-7.5 py-5">
           <div class="grid gap-5">
-            <label for="jsonType" class="font-medium">Select JSON Type:</label>
-        <select id="jsonType" class="w-full select select-sm">
-          <option value="alf">ALF - JSON</option>
-          <option value="vc">VC - JSON</option>
-          <option value="idcpns">IDNS - JSON</option>
-        </select>
-
-        <input type="file" id="fileInput" accept=".json" class="input w-full border rounded px-3 py-2" />
-        <button onclick="processFile()" class="btn btn-sm btn-primary content-center">Convert to XLSX</button>
-
-        <div class="status text-center font-semibold mt-4" id="status"></div>
-
-        <h3 class="mt-6 font-medium">Preview:</h3>
-        <pre id="preview" class="bg-gray-50 p-3 rounded border max-h-60 overflow-auto"></pre>
+            <div class="space-y-4 max-w-lg mb-5">
+        <input type="file" id="fileInput" accept=".xlsx" class="input block w-full text-sm text-gray-700 border rounded p-2 mb-5">
+        <input type="text" id="category" placeholder="Category (optional)" class="input block w-full text-sm text-gray-700 border rounded p-2 mb-5">
+        <button onclick="convertFile()" class="btn btn-primary px-4 py-2 rounded">Convert to Moodle XML</button>
+        <p id="status" class="mt-4 text-green-600"></p>
+      </div>
           </div>
          </div>
         </div>
@@ -2983,99 +2975,120 @@ rect.legend-mouseover-inactive,
 	    </div>
 	</div>	
 </div>
-<script>
-    let jsonData = null;
-
-    document.getElementById('fileInput').addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        try {
-          jsonData = JSON.parse(e.target.result);
-          document.getElementById('status').textContent = "✅ JSON Loaded";
-        } catch (err) {
-          document.getElementById('status').textContent = "❌ Invalid JSON";
-        }
-      };
-      reader.readAsText(file);
-    });
-
-    function processFile() {
-      const type = document.getElementById('jsonType').value;
-      if (!jsonData) { alert("Upload JSON first!"); return; }
-
-      let rows = [];
-
-      try {
-        if (type === "alf") {
-          jsonData.data.ujianPelajaran.forEach(subj => {
-            subj.dataSoal.forEach(q => {
-              rows.push({
-                Subject: subj.namaPelajaran,
-                Bab: q.bab || "",
-                SoalID: q.soalID || "",
-                Question: clean(q.pertanyaan),
-                Choice1: clean(q.pilihan1), Choice2: clean(q.pilihan2),
-                Choice3: clean(q.pilihan3), Choice4: clean(q.pilihan4),
-                Choice5: clean(q.pilihan5),
-                Correct: q.jawabanBenar,
-                Explanation: clean(q.pembahasan)
-              });
-            });
-          });
-        } else if (type === "vc") {
-          jsonData.data.soalId.forEach(item => {
-            item.jawaban.forEach(ans => {
-              rows.push({
-                SoalID: item.id,
-                Question: clean(item.soal),
-                Answer: clean(ans.jawaban),
-                Correct: ans.isCorrect,
-                Point: ans.point,
-                Explanation: clean(item.pembahasan),
-                Category: item.category,
-                SubCategory: item.subCategory,
-                Status: item.status
-              });
-            });
-          });
-        } else if (type === "idcpns") {
-          jsonData.data.forEach(item => {
-            item.options.forEach(opt => {
-              rows.push({
-                Question: item.soal,
-                Explanation: item.pembahasan,
-                Subcategory: item.sub_category?.subkategori || "",
-                Initial: opt.inisial,
-                Answer: opt.jawaban,
-                Score: opt.nilai
-              });
-            });
-          });
-        }
-      } catch (err) {
-        document.getElementById('status').textContent = "❌ Error parsing: " + err.message;
-        return;
-      }
-
-      // Preview
-      document.getElementById('preview').textContent = JSON.stringify(rows.slice(0,5), null, 2);
-
-      // Export
-      const ws = XLSX.utils.json_to_sheet(rows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Questions");
-      XLSX.writeFile(wb, `output_${type}.xlsx`);
-
-      document.getElementById('status').textContent = `✅ Converted ${rows.length} rows`;
+<!-- Script Converter -->
+  <script>
+    function convertMarkupToHtml(text) {
+      if (!text) return "";
+      let t = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").replace(/\[br\]/g, "\n");
+      t = t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      t = t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+      t = t.replace(/(^|[^*])\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "$1<em>$2</em>");
+      return t.replace(/\n/g, "<br/>");
     }
 
-    function clean(html) {
-      if (!html) return "";
-      const div = document.createElement("div");
-      div.innerHTML = html;
-      return div.textContent.trim();
+    function createQuestionXML(row, index, categoryName, xmlDoc) {
+      let q = xmlDoc.createElement("question");
+      q.setAttribute("type", "multichoice");
+
+      // Name
+      let name = xmlDoc.createElement("name");
+      let nameText = xmlDoc.createElement("text");
+      nameText.textContent = row["Name"] || `Q${index+1}`;
+      name.appendChild(nameText);
+      q.appendChild(name);
+
+      // Question text
+      let qt = xmlDoc.createElement("questiontext");
+      qt.setAttribute("format", "html");
+      let qtText = xmlDoc.createElement("text");
+      qtText.textContent = convertMarkupToHtml(row["Question"]);
+      qt.appendChild(qtText);
+      q.appendChild(qt);
+
+      // Default grade
+      let dg = xmlDoc.createElement("defaultgrade");
+      dg.textContent = row["DefaultGrade"] || "5.0";
+      q.appendChild(dg);
+
+      q.appendChild(xmlDoc.createElement("penalty")).textContent = "0.0";
+      q.appendChild(xmlDoc.createElement("single")).textContent = "true";
+      q.appendChild(xmlDoc.createElement("shuffleanswers")).textContent = "true";
+      q.appendChild(xmlDoc.createElement("answernumbering")).textContent = "ABCD";
+
+      // General feedback
+      let gf = xmlDoc.createElement("generalfeedback");
+      gf.setAttribute("format", "html");
+      let gfText = xmlDoc.createElement("text");
+      gfText.textContent = convertMarkupToHtml(row["GeneralFeedback"] || "");
+      gf.appendChild(gfText);
+      q.appendChild(gf);
+
+      // Choices 1..5
+      for (let i = 1; i <= 5; i++) {
+        if (!row[`Choice${i}`]) continue;
+        let ans = xmlDoc.createElement("answer");
+        ans.setAttribute("fraction", row[`Fraction${i}`] || "0");
+        ans.setAttribute("format", "html");
+        let atext = xmlDoc.createElement("text");
+        atext.textContent = convertMarkupToHtml(row[`Choice${i}`]);
+        ans.appendChild(atext);
+
+        let fb = xmlDoc.createElement("feedback");
+        fb.setAttribute("format", "html");
+        let fbText = xmlDoc.createElement("text");
+        fbText.textContent = convertMarkupToHtml(row[`ChoiceFeedback${i}`] || "");
+        fb.appendChild(fbText);
+        ans.appendChild(fb);
+
+        q.appendChild(ans);
+      }
+
+      return q;
+    }
+
+    function convertFile() {
+      let file = document.getElementById("fileInput").files[0];
+      if (!file) return alert("Upload Excel file dulu!");
+
+      let reader = new FileReader();
+      reader.onload = function(e) {
+        let data = new Uint8Array(e.target.result);
+        let workbook = XLSX.read(data, { type: "array" });
+        let sheet = workbook.Sheets[workbook.SheetNames[0]];
+        let json = XLSX.utils.sheet_to_json(sheet);
+
+        let xmlDoc = document.implementation.createDocument("", "", null);
+        let root = xmlDoc.createElement("quiz");
+
+        // Add category
+        let catQ = xmlDoc.createElement("question");
+        catQ.setAttribute("type", "category");
+        let cat = xmlDoc.createElement("category");
+        let catText = xmlDoc.createElement("text");
+        catText.textContent = "$course$/" + (document.getElementById("category").value || "Default");
+        cat.appendChild(catText);
+        catQ.appendChild(cat);
+        root.appendChild(catQ);
+
+        // Questions
+        json.forEach((row, idx) => {
+          root.appendChild(createQuestionXML(row, idx, "", xmlDoc));
+        });
+
+        xmlDoc.appendChild(root);
+        let xmlStr = new XMLSerializer().serializeToString(xmlDoc);
+
+        // Download
+        let blob = new Blob([xmlStr], { type: "application/xml" });
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = "moodle-quiz.xml";
+        a.click();
+
+        document.getElementById("status").textContent = "✅ Converted successfully!";
+      };
+      reader.readAsArrayBuffer(file);
     }
   </script>
 </body></html>
