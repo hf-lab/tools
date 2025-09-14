@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TinyMCE Live Editor → Custom Markup Converter</title>
+  <script src="https://cdn.tiny.cloud/1/77hf2rpmdbg9kr1u3pc0mtubhufo2i7u9syer0ulphm40zl7/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <style>
+    :root { --bg:#0b1020; --card:#121934; --muted:#aab3cf; --accent:#7cc7ff; }
+    html,body { height:100%; margin:0; background:var(--bg); color:#3a3a3a; font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    header { padding:16px 20px; border-bottom:1px solid #25315a; position:sticky; top:0; background:linear-gradient(180deg,#0b1020 0%, #0b1020ee 70%, #0b1020 100%); backdrop-filter: blur(6px); z-index:3 }
+    header h1 { margin:0; font-size:18px; letter-spacing:.2px; }
+    main { display:grid; gap:14px; grid-template-columns: 1fr 420px; padding:14px; }
+    .panel { background:var(--card); border:1px solid #25315a; border-radius:14px; overflow:hidden; box-shadow: 0 10px 30px #0003; }
+    .panel h2 { font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:0; padding:10px 12px; border-bottom:1px solid #25315a; }
+    .toolbar { display:flex; gap:8px; align-items:center; padding:10px 12px; border-bottom:1px solid #25315a; flex-wrap:wrap; }
+    .toolbar label { display:flex; align-items:center; gap:6px; }
+    .btn { cursor:pointer; border:1px solid #2f3c6d; background:#1a2551; color:#e6ecff; border-radius:10px; padding:8px 10px; font-weight:600; }
+    .btn:active { transform: translateY(1px); }
+    .out { padding:12px; }
+    textarea.output { width:100%; min-height:220px; background:#0e1535; color:#e6ecff; border:1px solid #2f3c6d; border-radius:10px; padding:10px; resize:vertical; }
+    .muted { color:var(--muted); font-size:12px; }
+    .inline-code { background:#0e1535; border:1px solid #2f3c6d; padding:2px 6px; border-radius:6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    footer { padding:10px 20px; color:var(--muted); border-top:1px solid #25315a; }
+    .stack { display:flex; flex-direction:column; gap:10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TinyMCE Live Editor → Custom Markup Converter</h1>
+  </header>
+
+  <main>
+    <section class="panel" style="grid-column: 1 / 2;">
+      <h2>Editor</h2>
+      <div id="editorWrap" style="padding:12px;">
+        <textarea id="editor">
+<p><strong>Welcome!</strong> This is a live editor.</p>
+<p><em>Try formatting</em> text, add line breaks,<br/>and create lists:</p>
+<ul>
+  <li>One bullet</li>
+  <li>Another <strong>bold</strong> bullet</li>
+</ul>
+<ol>
+  <li>First</li>
+  <li>Second</li>
+</ol>
+        </textarea>
+      </div>
+    </section>
+
+    <section class="panel" style="grid-column: 2 / 3;">
+      <h2>Converter</h2>
+      <div class="toolbar">
+        <label class="muted"><input type="checkbox" id="autoUpdate" checked /> Auto‑convert on change</label>
+        <label class="muted"><input type="checkbox" id="indentNested" checked /> Indent nested lists</label>
+        <label class="muted">Ordered list style:
+          <select id="olStyle">
+            <option value="dot">1.</option>
+            <option value="paren">1)</option>
+          </select>
+        </label>
+        <label class="muted">Line break token:
+          <select id="breakToken">
+            <option value="[br]">[br]</option>
+            <option value="\n">\n</option>
+          </select>
+        </label>
+        <button class="btn" id="convertBtn">Convert Now</button>
+        <button class="btn" id="copyBtn">Copy Output</button>
+      </div>
+      <div class="out stack">
+        <div class="muted">Rules: <span class="inline-code">&lt;strong/b&gt; → **bold**</span>, <span class="inline-code">&lt;em/i&gt; → *italic*</span>, <span class="inline-code">&lt;ul&gt;&lt;li&gt; → - item</span>, <span class="inline-code">&lt;ol&gt;&lt;li&gt; → 1. item / 1) item</span>, <span class="inline-code">&lt;br&gt; → [br] or \n</span></div>
+        <textarea id="output" class="output" placeholder="Converted text will appear here…" readonly></textarea>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Tip: Paste rich text (or write) on the left. The right panel converts it to your custom markup.
+  </footer>
+
+  <script>
+    // Initialize TinyMCE
+    tinymce.init({
+      selector: '#editor',
+      menubar: false,
+      statusbar: false,
+      height: 520,
+      plugins: 'lists advlist link code',
+      toolbar: 'undo redo | bold italic | bullist numlist | removeformat | code',
+      content_css: false,
+      skin: 'oxide-dark',
+      content_style: `body { font:14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color:#3a3a3a; } a { color: #7cc7ff }`,
+      setup: (editor) => {
+        const auto = document.getElementById('autoUpdate');
+        editor.on('init', () => convert());
+        editor.on('input change undo redo format', () => { if (auto.checked) convert(); });
+      }
+    });
+
+    const outputEl = document.getElementById('output');
+    const convertBtn = document.getElementById('convertBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const breakTokenSel = document.getElementById('breakToken');
+    const olStyleSel = document.getElementById('olStyle');
+    const indentNested = document.getElementById('indentNested');
+
+    convertBtn.addEventListener('click', convert);
+
+    copyBtn.addEventListener('click', async () => {
+      outputEl.select();
+      document.execCommand('copy');
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => (copyBtn.textContent = 'Copy Output'), 800);
+    });
+
+    breakTokenSel.addEventListener('change', convert);
+    olStyleSel.addEventListener('change', convert);
+    indentNested.addEventListener('change', convert);
+
+    function convert() {
+      const editor = tinymce.activeEditor;
+      if (!editor) return;
+      const html = editor.getContent({ format: 'html' });
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const brToken = breakTokenSel.value;
+      const olStyle = olStyleSel.value; // 'dot' | 'paren'
+      const indent = !!indentNested.checked;
+
+      function textify(str) {
+        return str
+          .replace(/\u00A0/g, ' ')
+          .replace(/[\t\v\f\r]/g, ' ')
+          .replace(/\s+/g, ' ');
+      }
+
+      function serialize(node, ctx = { 
+        list: null,  // 'ul' | 'ol' | null
+        index: 0,    // current index for <ol>
+        depth: 0     // nesting depth
+      }) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return textify(node.nodeValue || '');
+        }
+        if (node.nodeType !== Node.ELEMENT_NODE) {
+          return '';
+        }
+
+        const tag = node.tagName.toLowerCase();
+
+        // Line break handling
+        if (tag === 'br') {
+          return brToken;
+        }
+
+        // Inline formatting
+        if (tag === 'strong' || tag === 'b') {
+          return '**' + Array.from(node.childNodes).map(n => serialize(n, ctx)).join('') + '**';
+        }
+        if (tag === 'em' || tag === 'i') {
+          return '*' + Array.from(node.childNodes).map(n => serialize(n, ctx)).join('') + '*';
+        }
+        if (tag === 'span' || tag === 'a' || tag === 'u' || tag === 'mark' || tag === 'code') {
+          // Ignore extra inline styles; keep plain text (or link text only)
+          return Array.from(node.childNodes).map(n => serialize(n, ctx)).join('');
+        }
+
+        // Block handling
+        if (tag === 'p' || tag === 'div') {
+          const inner = Array.from(node.childNodes).map(n => serialize(n, ctx)).join('');
+          return inner.trim() ? inner.trim() + '\n' : '';
+        }
+
+        if (tag === 'ul') {
+          let out = '';
+          const nextCtx = { list: 'ul', index: 0, depth: ctx.depth + 1 };
+          for (const li of node.children) {
+            if (li.tagName && li.tagName.toLowerCase() === 'li') {
+              let line = Array.from(li.childNodes).map(n => serialize(n, nextCtx)).join('').trim();
+              // Extract nested lists from within LI (they'll emit their own newlines)
+              const nestedLists = Array.from(li.children).filter(el => /^(ul|ol)$/i.test(el.tagName));
+              const nestedOut = nestedLists.map(nl => serialize(nl, nextCtx)).join('');
+              const pad = indent ? '  '.repeat(ctx.depth) : '';
+              out += pad + '- ' + line.replace(/\n+$/,'') + '\n' + nestedOut;
+            }
+          }
+          return out;
+        }
+
+        if (tag === 'ol') {
+          let out = '';
+          const start = parseInt(node.getAttribute('start') || '1', 10) || 1;
+          const nextCtx = { list: 'ol', index: start, depth: ctx.depth + 1 };
+          for (const li of node.children) {
+            if (li.tagName && li.tagName.toLowerCase() === 'li') {
+              let line = Array.from(li.childNodes).map(n => serialize(n, nextCtx)).join('').trim();
+              const nestedLists = Array.from(li.children).filter(el => /^(ul|ol)$/i.test(el.tagName));
+              const nestedOut = nestedLists.map(nl => serialize(nl, nextCtx)).join('');
+              const bullet = (olStyle === 'paren') ? `${nextCtx.index}) ` : `${nextCtx.index}. `;
+              const pad = indent ? '  '.repeat(ctx.depth) : '';
+              out += pad + bullet + line.replace(/\n+$/,'') + '\n' + nestedOut;
+              nextCtx.index++;
+            }
+          }
+          return out;
+        }
+
+        if (tag === 'li') {
+          // Normally handled by UL/OL loop above, but keep fallback
+          return Array.from(node.childNodes).map(n => serialize(n, ctx)).join('') + '\n';
+        }
+
+        if (/^h[1-6]$/.test(tag)) {
+          const inner = Array.from(node.childNodes).map(n => serialize(n, ctx)).join('');
+          return inner.trim() + '\n';
+        }
+
+        if (tag === 'table') {
+          // Flatten tables row-wise as plain lines
+          let out = '';
+          for (const tr of node.querySelectorAll('tr')) {
+            const cells = Array.from(tr.children).map(td => textify(td.textContent || '').trim());
+            if (cells.join('').length) out += cells.join(' | ') + '\n';
+          }
+          return out;
+        }
+
+        // Default: serialize children
+        return Array.from(node.childNodes).map(n => serialize(n, ctx)).join('');
+      }
+
+      const body = doc.body;
+      let result = Array.from(body.childNodes).map(n => serialize(n)).join('');
+
+      // Cleanup: collapse excessive blank lines, trim edges
+      result = result
+        .replace(/\n{3,}/g, '\n\n')
+        .replace(/[ \t]+\n/g, '\n')
+        .trim();
+
+      outputEl.value = result;
+    }
+  </script>
+</body>
+</html>
