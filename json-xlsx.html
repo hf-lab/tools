@@ -1060,13 +1060,13 @@ rect.legend-mouseover-inactive,
          <div class="card-body grid gap-5 lg:gap-7.5 lg:py-7.5 py-5">
           <div class="grid gap-5">
             <label for="jsonType" class="font-medium">Select JSON Type:</label>
-        <select id="jsonType" class="w-full select select-sm">
+        <select id="jsonType" class="select block w-full text-sm text-gray-700 border rounded p-2 mb-5">
           <option value="alf">ALF - JSON</option>
           <option value="vc">VC - JSON</option>
           <option value="idcpns">IDNS - JSON</option>
         </select>
 
-        <input type="file" id="fileInput" accept=".json" class="w-full border rounded px-3 py-2" />
+        <input type="file" id="fileInput" accept=".json" class="input block w-full text-sm text-gray-700 border rounded p-2 mb-5 />
         <button onclick="processFile()" class="btn btn-sm btn-primary content-center">Convert to XLSX</button>
 
         <div class="status text-center font-semibold mt-4" id="status"></div>
