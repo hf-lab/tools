@@ -1,0 +1,3081 @@
+<html class="h-full light hentry" data-theme="true" dir="ltr" lang="en" data-theme-mode="light"><head><base href="../../">
+  <title>
+   Universal JSON → XLSX Converter | Online Toolbox
+  </title>
+  <meta charset="utf-8">
+  <meta content="follow, index" name="robots">
+  <link href="/" rel="canonical">
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+  <meta content="" name="description">
+  <meta content="@heinnz" name="twitter:site">
+  <meta content="@heinnz" name="twitter:creator">
+  <meta content="summary_large_image" name="twitter:card">
+  <meta content="Metronic - Tailwind CSS " name="twitter:title">
+  <meta content="" name="twitter:description">
+  <meta content="assets/media/app/og-image.png" name="twitter:image">
+  <meta content="/index.html" property="og:url">
+  <meta content="en_US" property="og:locale">
+  <meta content="website" property="og:type">
+  <meta content="@heinnz" property="og:site_name">
+  <meta content="Metronic - Tailwind CSS " property="og:title">
+  <meta content="" property="og:description">
+  <meta content="assets/media/app/og-image.png" property="og:image">
+  <link href="assets/media/app/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
+  <link href="assets/media/app/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
+  <link href="assets/media/app/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
+  <link href="assets/media/app/favicon.ico" rel="shortcut icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="assets/vendors/apexcharts/apexcharts.css" rel="stylesheet">
+  <link href="assets/vendors/keenicons/styles.bundle.css" rel="stylesheet">
+  <link href="assets/css/styles.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+ <style id="apexcharts-css">@keyframes opaque {
+  0% {
+    opacity: 0
+  }
+
+  to {
+    opacity: 1
+  }
+}
+
+@keyframes resizeanim {
+
+  0%,
+  to {
+    opacity: 0
+  }
+}
+
+.apexcharts-canvas {
+  position: relative;
+  direction: ltr !important;
+  user-select: none
+}
+
+.apexcharts-canvas ::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 6px
+}
+
+.apexcharts-canvas ::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .5);
+  box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5)
+}
+
+.apexcharts-inner {
+  position: relative
+}
+
+.apexcharts-text tspan {
+  font-family: inherit
+}
+
+rect.legend-mouseover-inactive,
+.legend-mouseover-inactive rect,
+.legend-mouseover-inactive path,
+.legend-mouseover-inactive circle,
+.legend-mouseover-inactive line,
+.legend-mouseover-inactive text.apexcharts-yaxis-title-text,
+.legend-mouseover-inactive text.apexcharts-yaxis-label {
+  transition: .15s ease all;
+  opacity: .2
+}
+
+.apexcharts-legend-text {
+  padding-left: 15px;
+  margin-left: -15px;
+}
+
+.apexcharts-series-collapsed {
+  opacity: 0
+}
+
+.apexcharts-tooltip {
+  border-radius: 5px;
+  box-shadow: 2px 2px 6px -4px #999;
+  cursor: default;
+  font-size: 14px;
+  left: 62px;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  white-space: nowrap;
+  z-index: 12;
+  transition: .15s ease all
+}
+
+.apexcharts-tooltip.apexcharts-active {
+  opacity: 1;
+  transition: .15s ease all
+}
+
+.apexcharts-tooltip.apexcharts-theme-light {
+  border: 1px solid #e3e3e3;
+  background: rgba(255, 255, 255, .96)
+}
+
+.apexcharts-tooltip.apexcharts-theme-dark {
+  color: #fff;
+  background: rgba(30, 30, 30, .8)
+}
+
+.apexcharts-tooltip * {
+  font-family: inherit
+}
+
+.apexcharts-tooltip-title {
+  padding: 6px;
+  font-size: 15px;
+  margin-bottom: 4px
+}
+
+.apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
+  background: #eceff1;
+  border-bottom: 1px solid #ddd
+}
+
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-title {
+  background: rgba(0, 0, 0, .7);
+  border-bottom: 1px solid #333
+}
+
+.apexcharts-tooltip-text-goals-value,
+.apexcharts-tooltip-text-y-value,
+.apexcharts-tooltip-text-z-value {
+  display: inline-block;
+  margin-left: 5px;
+  font-weight: 600
+}
+
+.apexcharts-tooltip-text-goals-label:empty,
+.apexcharts-tooltip-text-goals-value:empty,
+.apexcharts-tooltip-text-y-label:empty,
+.apexcharts-tooltip-text-y-value:empty,
+.apexcharts-tooltip-text-z-value:empty,
+.apexcharts-tooltip-title:empty {
+  display: none
+}
+
+.apexcharts-tooltip-text-goals-label,
+.apexcharts-tooltip-text-goals-value {
+  padding: 6px 0 5px
+}
+
+.apexcharts-tooltip-goals-group,
+.apexcharts-tooltip-text-goals-label,
+.apexcharts-tooltip-text-goals-value {
+  display: flex
+}
+
+.apexcharts-tooltip-text-goals-label:not(:empty),
+.apexcharts-tooltip-text-goals-value:not(:empty) {
+  margin-top: -6px
+}
+
+.apexcharts-tooltip-marker {
+  width: 12px;
+  height: 12px;
+  position: relative;
+  top: 0;
+  margin-right: 10px;
+  border-radius: 50%
+}
+
+.apexcharts-tooltip-series-group {
+  padding: 0 10px;
+  display: none;
+  text-align: left;
+  justify-content: left;
+  align-items: center
+}
+
+.apexcharts-tooltip-series-group.apexcharts-active .apexcharts-tooltip-marker {
+  opacity: 1
+}
+
+.apexcharts-tooltip-series-group.apexcharts-active,
+.apexcharts-tooltip-series-group:last-child {
+  padding-bottom: 4px
+}
+
+.apexcharts-tooltip-y-group {
+  padding: 6px 0 5px
+}
+
+.apexcharts-custom-tooltip,
+.apexcharts-tooltip-box {
+  padding: 4px 8px
+}
+
+.apexcharts-tooltip-boxPlot {
+  display: flex;
+  flex-direction: column-reverse
+}
+
+.apexcharts-tooltip-box>div {
+  margin: 4px 0
+}
+
+.apexcharts-tooltip-box span.value {
+  font-weight: 700
+}
+
+.apexcharts-tooltip-rangebar {
+  padding: 5px 8px
+}
+
+.apexcharts-tooltip-rangebar .category {
+  font-weight: 600;
+  color: #777
+}
+
+.apexcharts-tooltip-rangebar .series-name {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 5px
+}
+
+.apexcharts-xaxistooltip,
+.apexcharts-yaxistooltip {
+  opacity: 0;
+  pointer-events: none;
+  color: #373d3f;
+  font-size: 13px;
+  text-align: center;
+  border-radius: 2px;
+  position: absolute;
+  z-index: 10;
+  background: #eceff1;
+  border: 1px solid #90a4ae
+}
+
+.apexcharts-xaxistooltip {
+  padding: 9px 10px;
+  transition: .15s ease all
+}
+
+.apexcharts-xaxistooltip.apexcharts-theme-dark {
+  background: rgba(0, 0, 0, .7);
+  border: 1px solid rgba(0, 0, 0, .5);
+  color: #fff
+}
+
+.apexcharts-xaxistooltip:after,
+.apexcharts-xaxistooltip:before {
+  left: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none
+}
+
+.apexcharts-xaxistooltip:after {
+  border-color: transparent;
+  border-width: 6px;
+  margin-left: -6px
+}
+
+.apexcharts-xaxistooltip:before {
+  border-color: transparent;
+  border-width: 7px;
+  margin-left: -7px
+}
+
+.apexcharts-xaxistooltip-bottom:after,
+.apexcharts-xaxistooltip-bottom:before {
+  bottom: 100%
+}
+
+.apexcharts-xaxistooltip-top:after,
+.apexcharts-xaxistooltip-top:before {
+  top: 100%
+}
+
+.apexcharts-xaxistooltip-bottom:after {
+  border-bottom-color: #eceff1
+}
+
+.apexcharts-xaxistooltip-bottom:before {
+  border-bottom-color: #90a4ae
+}
+
+.apexcharts-xaxistooltip-bottom.apexcharts-theme-dark:after,
+.apexcharts-xaxistooltip-bottom.apexcharts-theme-dark:before {
+  border-bottom-color: rgba(0, 0, 0, .5)
+}
+
+.apexcharts-xaxistooltip-top:after {
+  border-top-color: #eceff1
+}
+
+.apexcharts-xaxistooltip-top:before {
+  border-top-color: #90a4ae
+}
+
+.apexcharts-xaxistooltip-top.apexcharts-theme-dark:after,
+.apexcharts-xaxistooltip-top.apexcharts-theme-dark:before {
+  border-top-color: rgba(0, 0, 0, .5)
+}
+
+.apexcharts-xaxistooltip.apexcharts-active {
+  opacity: 1;
+  transition: .15s ease all
+}
+
+.apexcharts-yaxistooltip {
+  padding: 4px 10px
+}
+
+.apexcharts-yaxistooltip.apexcharts-theme-dark {
+  background: rgba(0, 0, 0, .7);
+  border: 1px solid rgba(0, 0, 0, .5);
+  color: #fff
+}
+
+.apexcharts-yaxistooltip:after,
+.apexcharts-yaxistooltip:before {
+  top: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none
+}
+
+.apexcharts-yaxistooltip:after {
+  border-color: transparent;
+  border-width: 6px;
+  margin-top: -6px
+}
+
+.apexcharts-yaxistooltip:before {
+  border-color: transparent;
+  border-width: 7px;
+  margin-top: -7px
+}
+
+.apexcharts-yaxistooltip-left:after,
+.apexcharts-yaxistooltip-left:before {
+  left: 100%
+}
+
+.apexcharts-yaxistooltip-right:after,
+.apexcharts-yaxistooltip-right:before {
+  right: 100%
+}
+
+.apexcharts-yaxistooltip-left:after {
+  border-left-color: #eceff1
+}
+
+.apexcharts-yaxistooltip-left:before {
+  border-left-color: #90a4ae
+}
+
+.apexcharts-yaxistooltip-left.apexcharts-theme-dark:after,
+.apexcharts-yaxistooltip-left.apexcharts-theme-dark:before {
+  border-left-color: rgba(0, 0, 0, .5)
+}
+
+.apexcharts-yaxistooltip-right:after {
+  border-right-color: #eceff1
+}
+
+.apexcharts-yaxistooltip-right:before {
+  border-right-color: #90a4ae
+}
+
+.apexcharts-yaxistooltip-right.apexcharts-theme-dark:after,
+.apexcharts-yaxistooltip-right.apexcharts-theme-dark:before {
+  border-right-color: rgba(0, 0, 0, .5)
+}
+
+.apexcharts-yaxistooltip.apexcharts-active {
+  opacity: 1
+}
+
+.apexcharts-yaxistooltip-hidden {
+  display: none
+}
+
+.apexcharts-xcrosshairs,
+.apexcharts-ycrosshairs {
+  pointer-events: none;
+  opacity: 0;
+  transition: .15s ease all
+}
+
+.apexcharts-xcrosshairs.apexcharts-active,
+.apexcharts-ycrosshairs.apexcharts-active {
+  opacity: 1;
+  transition: .15s ease all
+}
+
+.apexcharts-ycrosshairs-hidden {
+  opacity: 0
+}
+
+.apexcharts-selection-rect {
+  cursor: move
+}
+
+.svg_select_shape {
+  stroke-width: 1;
+  stroke-dasharray: 10 10;
+  stroke: black;
+  stroke-opacity: 0.1;
+  pointer-events: none;
+  fill: none;
+}
+
+.svg_select_handle {
+  stroke-width: 3;
+  stroke: black;
+  fill: none;
+}
+
+.svg_select_handle_r {
+  cursor: e-resize;
+}
+
+.svg_select_handle_l {
+  cursor: w-resize;
+}
+
+.apexcharts-svg.apexcharts-zoomable.hovering-zoom {
+  cursor: crosshair
+}
+
+.apexcharts-svg.apexcharts-zoomable.hovering-pan {
+  cursor: move
+}
+
+.apexcharts-menu-icon,
+.apexcharts-pan-icon,
+.apexcharts-reset-icon,
+.apexcharts-selection-icon,
+.apexcharts-toolbar-custom-icon,
+.apexcharts-zoom-icon,
+.apexcharts-zoomin-icon,
+.apexcharts-zoomout-icon {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  line-height: 24px;
+  color: #6e8192;
+  text-align: center
+}
+
+.apexcharts-menu-icon svg,
+.apexcharts-reset-icon svg,
+.apexcharts-zoom-icon svg,
+.apexcharts-zoomin-icon svg,
+.apexcharts-zoomout-icon svg {
+  fill: #6e8192
+}
+
+.apexcharts-selection-icon svg {
+  fill: #444;
+  transform: scale(.76)
+}
+
+.apexcharts-theme-dark .apexcharts-menu-icon svg,
+.apexcharts-theme-dark .apexcharts-pan-icon svg,
+.apexcharts-theme-dark .apexcharts-reset-icon svg,
+.apexcharts-theme-dark .apexcharts-selection-icon svg,
+.apexcharts-theme-dark .apexcharts-toolbar-custom-icon svg,
+.apexcharts-theme-dark .apexcharts-zoom-icon svg,
+.apexcharts-theme-dark .apexcharts-zoomin-icon svg,
+.apexcharts-theme-dark .apexcharts-zoomout-icon svg {
+  fill: #f3f4f5
+}
+
+.apexcharts-canvas .apexcharts-reset-zoom-icon.apexcharts-selected svg,
+.apexcharts-canvas .apexcharts-selection-icon.apexcharts-selected svg,
+.apexcharts-canvas .apexcharts-zoom-icon.apexcharts-selected svg {
+  fill: #008ffb
+}
+
+.apexcharts-theme-light .apexcharts-menu-icon:hover svg,
+.apexcharts-theme-light .apexcharts-reset-icon:hover svg,
+.apexcharts-theme-light .apexcharts-selection-icon:not(.apexcharts-selected):hover svg,
+.apexcharts-theme-light .apexcharts-zoom-icon:not(.apexcharts-selected):hover svg,
+.apexcharts-theme-light .apexcharts-zoomin-icon:hover svg,
+.apexcharts-theme-light .apexcharts-zoomout-icon:hover svg {
+  fill: #333
+}
+
+.apexcharts-menu-icon,
+.apexcharts-selection-icon {
+  position: relative
+}
+
+.apexcharts-reset-icon {
+  margin-left: 5px
+}
+
+.apexcharts-menu-icon,
+.apexcharts-reset-icon,
+.apexcharts-zoom-icon {
+  transform: scale(.85)
+}
+
+.apexcharts-zoomin-icon,
+.apexcharts-zoomout-icon {
+  transform: scale(.7)
+}
+
+.apexcharts-zoomout-icon {
+  margin-right: 3px
+}
+
+.apexcharts-pan-icon {
+  transform: scale(.62);
+  position: relative;
+  left: 1px;
+  top: 0
+}
+
+.apexcharts-pan-icon svg {
+  fill: #fff;
+  stroke: #6e8192;
+  stroke-width: 2
+}
+
+.apexcharts-pan-icon.apexcharts-selected svg {
+  stroke: #008ffb
+}
+
+.apexcharts-pan-icon:not(.apexcharts-selected):hover svg {
+  stroke: #333
+}
+
+.apexcharts-toolbar {
+  position: absolute;
+  z-index: 11;
+  max-width: 176px;
+  text-align: right;
+  border-radius: 3px;
+  padding: 0 6px 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center
+}
+
+.apexcharts-menu {
+  background: #fff;
+  position: absolute;
+  top: 100%;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 3px;
+  right: 10px;
+  opacity: 0;
+  min-width: 110px;
+  transition: .15s ease all;
+  pointer-events: none
+}
+
+.apexcharts-menu.apexcharts-menu-open {
+  opacity: 1;
+  pointer-events: all;
+  transition: .15s ease all
+}
+
+.apexcharts-menu-item {
+  padding: 6px 7px;
+  font-size: 12px;
+  cursor: pointer
+}
+
+.apexcharts-theme-light .apexcharts-menu-item:hover {
+  background: #eee
+}
+
+.apexcharts-theme-dark .apexcharts-menu {
+  background: rgba(0, 0, 0, .7);
+  color: #fff
+}
+
+@media screen and (min-width:768px) {
+  .apexcharts-canvas:hover .apexcharts-toolbar {
+    opacity: 1
+  }
+}
+
+.apexcharts-canvas .apexcharts-element-hidden,
+.apexcharts-datalabel.apexcharts-element-hidden,
+.apexcharts-hide .apexcharts-series-points {
+  opacity: 0;
+}
+
+.apexcharts-hidden-element-shown {
+  opacity: 1;
+  transition: 0.25s ease all;
+}
+
+.apexcharts-datalabel,
+.apexcharts-datalabel-label,
+.apexcharts-datalabel-value,
+.apexcharts-datalabels,
+.apexcharts-pie-label {
+  cursor: default;
+  pointer-events: none
+}
+
+.apexcharts-pie-label-delay {
+  opacity: 0;
+  animation-name: opaque;
+  animation-duration: .3s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease
+}
+
+.apexcharts-radialbar-label {
+  cursor: pointer;
+}
+
+.apexcharts-annotation-rect,
+.apexcharts-area-series .apexcharts-area,
+.apexcharts-area-series .apexcharts-series-markers .apexcharts-marker.no-pointer-events,
+.apexcharts-gridline,
+.apexcharts-line,
+.apexcharts-line-series .apexcharts-series-markers .apexcharts-marker.no-pointer-events,
+.apexcharts-point-annotation-label,
+.apexcharts-radar-series path:not(.apexcharts-marker),
+.apexcharts-radar-series polygon,
+.apexcharts-toolbar svg,
+.apexcharts-tooltip .apexcharts-marker,
+.apexcharts-xaxis-annotation-label,
+.apexcharts-yaxis-annotation-label,
+.apexcharts-zoom-rect {
+  pointer-events: none
+}
+
+.apexcharts-tooltip-active .apexcharts-marker {
+  transition: .15s ease all
+}
+
+.resize-triggers {
+  animation: 1ms resizeanim;
+  visibility: hidden;
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden
+}
+
+.contract-trigger:before,
+.resize-triggers,
+.resize-triggers>div {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0
+}
+
+.resize-triggers>div {
+  height: 100%;
+  width: 100%;
+  background: #eee;
+  overflow: auto
+}
+
+.contract-trigger:before {
+  overflow: hidden;
+  width: 200%;
+  height: 200%
+}
+
+.apexcharts-bar-goals-markers {
+  pointer-events: none
+}
+
+.apexcharts-bar-shadows {
+  pointer-events: none
+}
+
+.apexcharts-rangebar-goals-markers {
+  pointer-events: none
+}</style>
+</head>
+<body class="antialiased flex h-full text-base text-gray-700 [--tw-page-bg:var(--tw-light)] [--tw-page-bg-dark:var(--tw-coal-500)] [--tw-header-height-default:95px] [[data-sticky-header=on]&amp;]:[--tw-header-height:60px] [--tw-header-height:--tw-header-height-default] [--tw-header-height-mobile:70px] bg-[--tw-page-bg] dark:bg-[--tw-page-bg-dark] entry-content" data-rm-theme="light" lang="en">
+  <!-- Theme Mode -->
+  <script>
+   const defaultThemeMode = 'light'; // light|dark|system
+		let themeMode;
+
+		if ( document.documentElement ) {
+			if ( localStorage.getItem('theme')) {
+					themeMode = localStorage.getItem('theme');
+			} else if ( document.documentElement.hasAttribute('data-theme-mode')) {
+				themeMode = document.documentElement.getAttribute('data-theme-mode');
+			} else {
+				themeMode = defaultThemeMode;
+			}
+
+			if (themeMode === 'system') {
+				themeMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+			}
+
+			document.documentElement.classList.add(themeMode);
+		}
+  </script>
+  <!-- End of Theme Mode -->
+  <!-- Page -->
+  <!-- Main -->
+  <div class="flex grow flex-col [[data-sticky-header=on]_&amp;]:pt-[--tw-header-height-default]">
+   <!-- Header -->
+   <header class="flex items-center shrink-0 bg-[--tw-page-bg] dark:bg-[--tw-page-bg-dark] py-4 lg:py-0 lg:h-[--tw-header-height]" data-sticky="true" data-sticky-class="transition-[height] fixed z-10 top-0 left-0 right-0 shadow-sm backdrop-blur-md bg-white/70 dark:bg-coal-500/70 dark:border-b dark:border-b-coal-100" data-sticky-name="header" data-sticky-offset="200px" id="header">
+    <!-- Container -->
+    <div class="container-fixed flex flex-wrap gap-2 items-center lg:gap-4" id="header_container">
+     <!-- Logo -->
+     <div class="flex items-stretch gap-10 grow">
+      <div class="flex items-center gap-2.5">
+       <a href="/">
+        <img class="dark:hidden min-h-[34px]" src="assets/media/app/mini-logo-circle-primary.svg">
+        <img class="hidden dark:inline-block min-h-[34px]" src="assets/media/app/mini-logo-circle-primary-dark.svg">
+       </a>
+       <button class="lg:hidden btn btn-icon btn-light btn-clear btn-sm" data-drawer-toggle="#mega_menu_wrapper">
+        <i class="ki-filled ki-burger-menu-2">
+        </i>
+       </button>
+       <h3 class="text-gray-900 text-lg font-medium hidden md:block">Online ToolBox</h3>
+      </div>
+      <!-- Mega Menu -->
+      <div class="flex items-stretch" id="mega_menu_container"><div class="flex items-stretch" data-reparent="true" data-reparent-mode="prepend|lg:prepend" data-reparent-target="body|lg:#mega_menu_container">
+        <div class="hidden lg:flex lg:items-stretch" data-drawer="true" data-drawer-class="drawer drawer-start fixed z-10 top-0 bottom-0 w-full mr-5 max-w-[250px] p-5 lg:p-0 overflow-auto" data-drawer-enable="true|lg:false" id="mega_menu_wrapper">
+         
+        </div>
+       </div>
+       
+      </div>
+      <!-- End of Mega Men -->
+     </div>
+     <!-- End of Logo -->
+     <!-- Topbar -->
+     <div class="flex items-center flex-wrap gap-2 lg:gap-3.5">
+      <div class="flex items-center gap-1.5 lg:gap-3.5">
+       <div class="flex flex-col items-end pt-0.5">
+        
+        
+       </div>
+       <a class="btn btn-sm btn-primary" href="html/demo7/account/security/privacy-settings.html">Support<i class="ki-filled ki-arrow-up">
+        </i>
+       </a>
+      </div>
+      <div class="border-e border-gray-200 h-5 mx-1.5 lg:mx-3">
+      </div>
+      <div class="menu cursor-pointer" data-menu="true">
+       <div class="menu-item menu-item-dropdown" data-menu-item-offset="0, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">
+        <div class="menu-toggle size-[34px] rounded-full inline-flex items-center justify-center relative text-lg font-medium border border-gray-300 bg-gray-100 text-gray-800">H<svg class="absolute left-6 -top-0.5 text-primary size-3" fill="none" height="16" viewBox="0 0 15 16" width="15" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.5425 6.89749L13.5 5.83999C13.4273 5.76877 13.3699 5.6835 13.3312 5.58937C13.2925 5.49525 13.2734 5.39424 13.275 5.29249V3.79249C13.274 3.58699 13.2324 3.38371 13.1527 3.19432C13.0729 3.00494 12.9565 2.83318 12.8101 2.68892C12.6638 2.54466 12.4904 2.43073 12.2998 2.35369C12.1093 2.27665 11.9055 2.23801 11.7 2.23999H10.2C10.0982 2.24159 9.99722 2.22247 9.9031 2.18378C9.80898 2.1451 9.72371 2.08767 9.65249 2.01499L8.60249 0.957487C8.30998 0.665289 7.91344 0.50116 7.49999 0.50116C7.08654 0.50116 6.68999 0.665289 6.39749 0.957487L5.33999 1.99999C5.26876 2.07267 5.1835 2.1301 5.08937 2.16879C4.99525 2.20747 4.89424 2.22659 4.79249 2.22499H3.29249C3.08699 2.22597 2.88371 2.26754 2.69432 2.34731C2.50494 2.42709 2.33318 2.54349 2.18892 2.68985C2.04466 2.8362 1.93073 3.00961 1.85369 3.20013C1.77665 3.39064 1.73801 3.5945 1.73999 3.79999V5.29999C1.74159 5.40174 1.72247 5.50275 1.68378 5.59687C1.6451 5.691 1.58767 5.77627 1.51499 5.84749L0.457487 6.89749C0.165289 7.19 0.00115967 7.58654 0.00115967 7.99999C0.00115967 8.41344 0.165289 8.80998 0.457487 9.10249L1.49999 10.16C1.57267 10.2312 1.6301 10.3165 1.66878 10.4106C1.70747 10.5047 1.72659 10.6057 1.72499 10.7075V12.2075C1.72597 12.413 1.76754 12.6163 1.84731 12.8056C1.92709 12.995 2.04349 13.1668 2.18985 13.3111C2.3362 13.4553 2.50961 13.5692 2.70013 13.6463C2.89064 13.7233 3.0945 13.762 3.29999 13.76H4.79999C4.90174 13.7584 5.00275 13.7775 5.09687 13.8162C5.191 13.8549 5.27627 13.9123 5.34749 13.985L6.40499 15.0425C6.69749 15.3347 7.09404 15.4988 7.50749 15.4988C7.92094 15.4988 8.31748 15.3347 8.60999 15.0425L9.65999 14C9.73121 13.9273 9.81647 13.8699 9.9106 13.8312C10.0047 13.7925 10.1057 13.7734 10.2075 13.775H11.7075C12.1212 13.775 12.518 13.6106 12.8106 13.3181C13.1031 13.0255 13.2675 12.6287 13.2675 12.215V10.715C13.2659 10.6132 13.285 10.5122 13.3237 10.4181C13.3624 10.324 13.4198 10.2387 13.4925 10.1675L14.55 9.10999C14.6953 8.96452 14.8104 8.79176 14.8887 8.60164C14.9671 8.41152 15.007 8.20779 15.0063 8.00218C15.0056 7.79656 14.9643 7.59311 14.8847 7.40353C14.8051 7.21394 14.6888 7.04197 14.5425 6.89749ZM10.635 6.64999L6.95249 10.25C6.90055 10.3026 6.83864 10.3443 6.77038 10.3726C6.70212 10.4009 6.62889 10.4153 6.55499 10.415C6.48062 10.4139 6.40719 10.3982 6.33896 10.3685C6.27073 10.3389 6.20905 10.2961 6.15749 10.2425L4.37999 8.44249C4.32532 8.39044 4.28169 8.32793 4.25169 8.25867C4.22169 8.18941 4.20593 8.11482 4.20536 8.03934C4.20479 7.96387 4.21941 7.88905 4.24836 7.81934C4.27731 7.74964 4.31999 7.68647 4.37387 7.63361C4.42774 7.58074 4.4917 7.53926 4.56194 7.51163C4.63218 7.484 4.70726 7.47079 4.78271 7.47278C4.85816 7.47478 4.93244 7.49194 5.00112 7.52324C5.0698 7.55454 5.13148 7.59935 5.18249 7.65499L6.56249 9.05749L9.84749 5.84749C9.95296 5.74215 10.0959 5.68298 10.245 5.68298C10.394 5.68298 10.537 5.74215 10.6425 5.84749C10.6953 5.90034 10.737 5.96318 10.7653 6.03234C10.7935 6.1015 10.8077 6.1756 10.807 6.25031C10.8063 6.32502 10.7908 6.39884 10.7612 6.46746C10.7317 6.53608 10.6888 6.59813 10.635 6.64999Z" fill="currentColor">
+          </path>
+         </svg>
+        </div>
+        <div class="menu-dropdown menu-default light:border-gray-300 w-screen max-w-[250px]" style="">
+         <div class="flex items-center justify-between px-5 py-1.5 gap-1.5">
+          <div class="flex items-center gap-2">
+           <img alt="" class="size-9 rounded-full border-2 border-success" src="assets/media/avatars/300-2.png">
+            <div class="flex flex-col gap-1.5">
+             <span class="text-sm text-gray-800 font-semibold leading-none">Heinnz</span>
+             <a class="text-xs text-gray-600 hover:text-primary font-medium leading-none" href="html/demo7/account/home/get-started.html">
+              heinnz@gmail.com
+</a>
+            </div>
+           
+          </div>
+          <span class="badge badge-xs badge-primary badge-outline">
+           Pro
+          </span>
+         </div>
+         <div class="menu-separator">
+         </div>
+         <div class="flex flex-col">
+          <div class="menu-item">
+           <a class="menu-link" href="html/demo7/public-profile/profiles/default.html">
+            <span class="menu-icon">
+             <i class="ki-filled ki-badge">
+             </i>
+            </span>
+            <span class="menu-title">
+             Public Profile
+            </span>
+           </a>
+          </div>
+          <div class="menu-item">
+           <a class="menu-link" href="html/demo7/account/home/user-profile.html">
+            <span class="menu-icon">
+             <i class="ki-filled ki-profile-circle">
+             </i>
+            </span>
+            <span class="menu-title">
+             My Profile
+            </span>
+           </a>
+          </div>
+          <div class="menu-item menu-item-dropdown" data-menu-item-offset="-50px, 0" data-menu-item-placement="left-start" data-menu-item-placement-rtl="right-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:hover">
+           <div class="menu-link">
+            <span class="menu-icon">
+             <i class="ki-filled ki-setting-2">
+             </i>
+            </span>
+            <span class="menu-title">
+             My Account
+            </span>
+            <span class="menu-arrow">
+             <i class="ki-filled ki-right text-3xs rtl:transform rtl:rotate-180">
+             </i>
+            </span>
+           </div>
+           <div class="menu-dropdown menu-default light:border-gray-300 w-full max-w-[220px]" style="">
+            <div class="menu-item">
+             <a class="menu-link" href="html/demo7/account/home/get-started.html">
+              <span class="menu-icon">
+               <i class="ki-filled ki-coffee">
+               </i>
+              </span>
+              <span class="menu-title">
+               Get Started
+              </span>
+             </a>
+            </div>
+            <div class="menu-item">
+             <a class="menu-link" href="html/demo7/account/home/user-profile.html">
+              <span class="menu-icon">
+               <i class="ki-filled ki-some-files">
+               </i>
+              </span>
+              <span class="menu-title">
+               My Profile
+              </span>
+             </a>
+            </div>
+            <div class="menu-item">
+             <a class="menu-link" href="#">
+              <span class="menu-icon">
+               <i class="ki-filled ki-icon">
+               </i>
+              </span>
+              <span class="menu-title">
+               Billing
+              </span>
+              <span class="menu-badge" data-tooltip="true" data-tooltip-placement="top">
+               <i class="ki-filled ki-information-2 text-md text-gray-500">
+               </i>
+               <span class="tooltip" data-tooltip-content="true">
+                Payment and subscription info
+               </span>
+              </span>
+             </a>
+            </div>
+            <div class="menu-item">
+             <a class="menu-link" href="html/demo7/account/security/overview.html">
+              <span class="menu-icon">
+               <i class="ki-filled ki-medal-star">
+               </i>
+              </span>
+              <span class="menu-title">
+               Security
+              </span>
+             </a>
+            </div>
+            <div class="menu-item">
+             <a class="menu-link" href="html/demo7/account/members/teams.html">
+              <span class="menu-icon">
+               <i class="ki-filled ki-setting">
+               </i>
+              </span>
+              <span class="menu-title">
+               Members &amp; Roles
+              </span>
+             </a>
+            </div>
+            <div class="menu-item">
+             <a class="menu-link" href="html/demo7/account/integrations.html">
+              <span class="menu-icon">
+               <i class="ki-filled ki-switch">
+               </i>
+              </span>
+              <span class="menu-title">
+               Integrations
+              </span>
+             </a>
+            </div>
+            <div class="menu-separator">
+            </div>
+            <div class="menu-item">
+             <a class="menu-link" href="html/demo7/account/security/overview.html">
+              <span class="menu-icon">
+               <i class="ki-filled ki-shield-tick">
+               </i>
+              </span>
+              <span class="menu-title">
+               Notifications
+              </span>
+              <label class="switch switch-sm">
+               <input checked="" name="check" type="checkbox" value="1">
+              </label>
+             </a>
+            </div>
+           </div>
+          </div>
+          <div class="menu-item">
+           <a class="menu-link" href="https://devs.heinnz.com">
+            <span class="menu-icon">
+             <i class="ki-filled ki-message-programming">
+             </i>
+            </span>
+            <span class="menu-title">
+             Dev Forum
+            </span>
+           </a>
+          </div>
+          <div class="menu-item menu-item-dropdown" data-menu-item-offset="-10px, 0" data-menu-item-placement="left-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:hover">
+           <div class="menu-link">
+            <span class="menu-icon">
+             <i class="ki-filled ki-icon">
+             </i>
+            </span>
+            <span class="menu-title">
+             Language
+            </span>
+            <div class="flex items-center gap-1.5 rounded-md border border-gray-300 text-gray-600 p-1.5 text-2xs font-medium shrink-0">
+             English
+             <img alt="" class="inline-block size-3.5 rounded-full" src="assets/media/flags/united-states.svg">
+            </div>
+           </div>
+           <div class="menu-dropdown menu-default light:border-gray-300 w-full max-w-[170px]" style="">
+            <div class="menu-item active">
+             <a class="menu-link h-10" href="?dir=ltr">
+              <span class="menu-icon">
+               <img alt="" class="inline-block size-4 rounded-full" src="assets/media/flags/united-states.svg">
+              </span>
+              <span class="menu-title">
+               English
+              </span>
+              <span class="menu-badge">
+               <i class="ki-solid ki-check-circle text-success text-base">
+               </i>
+              </span>
+             </a>
+            </div>
+            <div class="menu-item">
+             <a class="menu-link h-10" href="?dir=rtl">
+              <span class="menu-icon">
+               <img alt="" class="inline-block size-4 rounded-full" src="assets/media/flags/saudi-arabia.svg">
+              </span>
+              <span class="menu-title">
+               Arabic(Saudi)
+              </span>
+             </a>
+            </div>
+            <div class="menu-item">
+             <a class="menu-link h-10" href="?dir=ltr">
+              <span class="menu-icon">
+               <img alt="" class="inline-block size-4 rounded-full" src="assets/media/flags/spain.svg">
+              </span>
+              <span class="menu-title">
+               Spanish
+              </span>
+             </a>
+            </div>
+            <div class="menu-item">
+             <a class="menu-link h-10" href="?dir=ltr">
+              <span class="menu-icon">
+               <img alt="" class="inline-block size-4 rounded-full" src="assets/media/flags/germany.svg">
+              </span>
+              <span class="menu-title">
+               German
+              </span>
+             </a>
+            </div>
+            <div class="menu-item">
+             <a class="menu-link h-10" href="?dir=ltr">
+              <span class="menu-icon">
+               <img alt="" class="inline-block size-4 rounded-full" src="assets/media/flags/japan.svg">
+              </span>
+              <span class="menu-title">
+               Japanese
+              </span>
+             </a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="menu-separator">
+         </div>
+         <div class="flex flex-col">
+          <div class="menu-item mb-0.5">
+           <div class="menu-link">
+            <span class="menu-icon">
+             <i class="ki-filled ki-moon">
+             </i>
+            </span>
+            <span class="menu-title">
+             Dark Mode
+            </span>
+            <label class="switch switch-sm">
+             <input data-theme-state="dark" data-theme-toggle="true" name="check" type="checkbox" value="1">
+            </label>
+           </div>
+          </div>
+          <div class="menu-item px-4 py-1.5">
+           <a class="btn btn-sm btn-light justify-center" href="html/demo7/authentication/classic/sign-in.html">
+            Log out
+           </a>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- End of Topbar -->
+    </div>
+    <!-- End of Container -->
+   </header>
+   <!-- End of Header -->
+   <!-- Toolbar -->
+   <div class="">
+    <!-- Container -->
+    <div class="container-fixed">
+		<!-- JSON to XLSX Converter -->
+ <div class="card">
+         <div class="card-header">
+          <h3 class="card-title">
+           Universal JSON → XLSX Converter
+          </h3>
+         </div>
+         <div class="card-body grid gap-5 lg:gap-7.5 lg:py-7.5 py-5">
+          <div class="grid gap-5">
+            <label for="jsonType" class="font-medium">Select JSON Type:</label>
+        <select id="jsonType" class="w-full select select-sm">
+          <option value="alf">ALF - JSON</option>
+          <option value="vc">VC - JSON</option>
+          <option value="idcpns">IDNS - JSON</option>
+        </select>
+
+        <input type="file" id="fileInput" accept=".json" class="w-full border rounded px-3 py-2" />
+        <button onclick="processFile()" class="btn btn-sm btn-primary content-center">Convert to XLSX</button>
+
+        <div class="status text-center font-semibold mt-4" id="status"></div>
+
+        <h3 class="mt-6 font-medium">Preview:</h3>
+        <pre id="preview" class="bg-gray-50 p-3 rounded border max-h-60 overflow-auto"></pre>
+          </div>
+         </div>
+        </div>
+      <!-- End Converter -->
+    </div>
+    <!-- End of Container -->
+   </div>
+   <!-- End of Toolbar -->
+   <!-- Content -->
+   <main class="grow" id="content" role="content">
+	   
+    <!-- Container -->
+    <div class="container-fixed" id="content_container">
+    </div>
+    <!-- End of Container -->
+    <!-- Container -->
+    <div class="container-fixed">
+     
+    </div>
+    <!-- End of Container -->
+   </main>
+   <!-- End of Content -->
+   <!-- Footer -->
+   <footer class="footer">
+    <!-- Container -->
+    <div class="container-fixed">
+     <div class="flex flex-col md:flex-row justify-center md:justify-between items-center gap-3 py-5">
+      <div class="flex order-2 md:order-1 gap-2 font-normal text-2sm">
+       <span class="text-gray-500">
+        2025©
+       </span>
+       <a class="text-gray-600 hover:text-primary" href="tools.hfd.my.id
+    ">HF-Toolbox</a>
+      </div>
+      <nav class="flex order-1 md:order-2 gap-4 font-normal text-2sm text-gray-600">
+       <a class="hover:text-primary" href="https://heinnz.com/metronic/tailwind/docs">
+        Docs
+       </a>
+       <a class="hover:text-primary" href="https://1.envato.market/Vm7VRE">
+        Purchase
+       </a>
+       <a class="hover:text-primary" href="https://heinnz.com/metronic/tailwind/docs/getting-started/license">
+        FAQ
+       </a>
+       <a class="hover:text-primary" href="https://devs.heinnz.com">
+        Support
+       </a>
+       <a class="hover:text-primary" href="https://heinnz.com/metronic/tailwind/docs/getting-started/license">
+        License
+       </a>
+      </nav>
+     </div>
+    </div>
+    <!-- End of Container -->
+   </footer>
+   <!-- End of Footer -->
+  </div>
+  <!-- End of Main -->
+  <div class="modal" data-modal="true" id="search_modal">
+   <div class="modal-content max-w-[600px] top-[15%]">
+    <div class="modal-header py-4 px-5">
+     <i class="ki-filled ki-magnifier text-gray-700 text-xl">
+     </i>
+     <input class="input px-0 border-none bg-transparent shadow-none ms-2.5" name="query" placeholder="Tap to start search" type="text" value="">
+     <button class="btn btn-sm btn-icon btn-light btn-clear shrink-0" data-modal-dismiss="true">
+      <i class="ki-filled ki-cross">
+      </i>
+     </button>
+    </div>
+    <div class="modal-body p-0 pb-5">
+     <div class="tabs justify-between px-5 mb-2.5" data-tabs="true">
+      <div class="flex items-center gap-5">
+       <button class="tab py-5 active" data-tab-toggle="#search_modal_mixed">
+        Mixed
+       </button>
+       <button class="tab py-5" data-tab-toggle="#search_modal_settings">
+        Settings
+       </button>
+       <button class="tab py-5" data-tab-toggle="#search_modal_integrations">
+        Integrations
+       </button>
+       <button class="tab py-5" data-tab-toggle="#search_modal_users">
+        Users
+       </button>
+       <button class="tab py-5" data-tab-toggle="#search_modal_docs">
+        Docs
+       </button>
+       <button class="tab py-5" data-tab-toggle="#search_modal_empty">
+        Empty
+       </button>
+       <button class="tab py-5" data-tab-toggle="#search_modal_no-results">
+        No Results
+       </button>
+      </div>
+      <div class="menu -mt-px" data-menu="true">
+       <div class="menu-item menu-item-dropdown" data-menu-item-offset="0, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:hover">
+        <button class="menu-toggle btn btn-sm btn-icon btn-light btn-clear">
+         <i class="ki-filled ki-setting-2">
+         </i>
+        </button>
+        <div class="menu-dropdown menu-default w-full max-w-[175px]" data-menu-dismiss="true">
+         <div class="menu-item">
+          <a class="menu-link" href="#">
+           <span class="menu-icon">
+            <i class="ki-filled ki-document">
+            </i>
+           </span>
+           <span class="menu-title">
+            View
+           </span>
+          </a>
+         </div>
+         <div class="menu-item menu-item-dropdown" data-menu-item-offset="-15px, 0" data-menu-item-placement="right-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:hover">
+          <div class="menu-link">
+           <span class="menu-icon">
+            <i class="ki-filled ki-notification-status">
+            </i>
+           </span>
+           <span class="menu-title">
+            Export
+           </span>
+           <span class="menu-arrow">
+            <i class="ki-filled ki-right text-3xs rtl:transform rtl:rotate-180">
+            </i>
+           </span>
+          </div>
+          <div class="menu-dropdown menu-default w-full max-w-[175px]">
+           <div class="menu-item">
+            <a class="menu-link" href="html/demo7/account/home/settings-sidebar.html">
+             <span class="menu-icon">
+              <i class="ki-filled ki-sms">
+              </i>
+             </span>
+             <span class="menu-title">
+              Email
+             </span>
+            </a>
+           </div>
+           <div class="menu-item">
+            <a class="menu-link" href="html/demo7/account/home/settings-sidebar.html">
+             <span class="menu-icon">
+              <i class="ki-filled ki-message-notify">
+              </i>
+             </span>
+             <span class="menu-title">
+              SMS
+             </span>
+            </a>
+           </div>
+           <div class="menu-item">
+            <a class="menu-link" href="html/demo7/account/home/settings-sidebar.html">
+             <span class="menu-icon">
+              <i class="ki-filled ki-notification-status">
+              </i>
+             </span>
+             <span class="menu-title">
+              Push
+             </span>
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="menu-item">
+          <a class="menu-link" href="#">
+           <span class="menu-icon">
+            <i class="ki-filled ki-pencil">
+            </i>
+           </span>
+           <span class="menu-title">
+            Edit
+           </span>
+          </a>
+         </div>
+         <div class="menu-item">
+          <a class="menu-link" href="#">
+           <span class="menu-icon">
+            <i class="ki-filled ki-trash">
+            </i>
+           </span>
+           <span class="menu-title">
+            Delete
+           </span>
+          </a>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="scrollable-y-auto" data-scrollable="true" data-scrollable-max-height="auto" data-scrollable-offset="300px" style="max-height: 366px;">
+      <div class="" id="search_modal_mixed">
+       <div class="flex flex-col gap-2.5">
+        <div>
+         <div class="text-xs text-gray-600 font-medium pt-2.5 pb-1.5 ps-5">
+          Settings
+         </div>
+         <div class="menu menu-default p-0 flex-col">
+          <div class="menu-item">
+           <a class="menu-link" href="#">
+            <span class="menu-icon">
+             <i class="ki-filled ki-badge">
+             </i>
+            </span>
+            <span class="menu-title">
+             Public Profile
+            </span>
+           </a>
+          </div>
+          <div class="menu-item">
+           <a class="menu-link" href="#">
+            <span class="menu-icon">
+             <i class="ki-filled ki-setting-2">
+             </i>
+            </span>
+            <span class="menu-title">
+             My Account
+            </span>
+           </a>
+          </div>
+          <div class="menu-item">
+           <a class="menu-link" href="#">
+            <span class="menu-icon">
+             <i class="ki-filled ki-message-programming">
+             </i>
+            </span>
+            <span class="menu-title">
+             Devs Forum
+            </span>
+           </a>
+          </div>
+         </div>
+        </div>
+        <div class="border-b border-b-gray-200">
+        </div>
+        <div>
+         <div class="text-xs text-gray-600 font-medium pt-2.5 pb-1.5 ps-5">
+          Integrations
+         </div>
+         <div class="menu menu-default p-0 flex-col">
+          <div class="menu-item">
+           <div class="menu-link flex items-center jistify-between gap-2">
+            <div class="flex items-center grow gap-2">
+             <div class="flex items-center justify-center size-10 shrink-0 rounded-full border border-gray-200 bg-gray-100">
+              <img alt="" class="size-6 shrink-0" src="assets/media/brand-logos/jira.svg">
+             </div>
+             <div class="flex flex-col gap-0.5">
+              <a class="text-2sm font-semibold text-gray-900 hover:text-primary-active" href="#">
+               Jira
+              </a>
+              <span class="text-2xs font-medium text-gray-600">
+               Project management
+              </span>
+             </div>
+            </div>
+            <div class="flex justify-end shrink-0">
+             <div class="flex -space-x-2">
+              <div class="flex">
+               <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-4.png">
+              </div>
+              <div class="flex">
+               <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-1.png">
+              </div>
+              <div class="flex">
+               <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-2.png">
+              </div>
+              <div class="flex">
+               <span class="hover:z-5 relative inline-flex items-center justify-center shrink-0 rounded-full ring-1 font-semibold leading-none text-3xs size-6 text-success-inverse size-6 ring-success-light bg-success">
+                +3
+               </span>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="menu-item">
+           <div class="menu-link flex items-center jistify-between gap-2">
+            <div class="flex items-center grow gap-2">
+             <div class="flex items-center justify-center size-10 shrink-0 rounded-full border border-gray-200 bg-gray-100">
+              <img alt="" class="size-6 shrink-0" src="assets/media/brand-logos/inferno.svg">
+             </div>
+             <div class="flex flex-col gap-0.5">
+              <a class="text-2sm font-semibold text-gray-900 hover:text-primary-active" href="#">
+               Inferno
+              </a>
+              <span class="text-2xs font-medium text-gray-600">
+               Real-time photo sharing app
+              </span>
+             </div>
+            </div>
+            <div class="flex justify-end shrink-0">
+             <div class="flex -space-x-2">
+              <div class="flex">
+               <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-14.png">
+              </div>
+              <div class="flex">
+               <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-12.png">
+              </div>
+              <div class="flex">
+               <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-9.png">
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="border-b border-b-gray-200">
+        </div>
+        <div>
+         <div class="text-xs text-gray-600 font-medium pt-2.5 pb-1.5 ps-5">
+          Users
+         </div>
+         <div class="menu menu-default p-0 flex-col">
+          <div class="grid gap-1">
+           <div class="menu-item">
+            <div class="menu-link flex justify-between gap-2">
+             <div class="flex items-center gap-2.5">
+              <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-3.png">
+              <div class="flex flex-col">
+               <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+                Tyler Hero
+               </a>
+               <span class="text-2sm font-normal text-gray-500">
+                tyler.hero@gmail.com connections
+               </span>
+              </div>
+             </div>
+             <div class="flex items-center gap-2.5">
+              <div class="badge badge-pill badge-outline badge-success gap-1.5">
+               <span class="badge badge-dot badge-success size-1.5">
+               </span>
+               In Office
+              </div>
+              <button class="btn btn-icon btn-light btn-clear btn-sm">
+               <i class="ki-filled ki-dots-vertical">
+               </i>
+              </button>
+             </div>
+            </div>
+           </div>
+           <div class="menu-item">
+            <div class="menu-link flex justify-between gap-2">
+             <div class="flex items-center gap-2.5">
+              <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-1.png">
+              <div class="flex flex-col">
+               <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+                Esther Howard
+               </a>
+               <span class="text-2sm font-normal text-gray-500">
+                esther.howard@gmail.com connections
+               </span>
+              </div>
+             </div>
+             <div class="flex items-center gap-2.5">
+              <div class="badge badge-pill badge-outline badge-danger gap-1.5">
+               <span class="badge badge-dot badge-danger size-1.5">
+               </span>
+               On Leave
+              </div>
+              <button class="btn btn-icon btn-light btn-clear btn-sm">
+               <i class="ki-filled ki-dots-vertical">
+               </i>
+              </button>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="hidden" id="search_modal_settings">
+       <div class="menu menu-default p-0 flex-col">
+        <div class="text-xs text-gray-600 font-medium pt-2.5 ps-5 pb-1.5">
+         Shortcuts
+        </div>
+        <div class="menu-item">
+         <a class="menu-link" href="#">
+          <span class="menu-icon">
+           <i class="ki-filled ki-home-2">
+           </i>
+          </span>
+          <span class="menu-title">
+           Go to Dashboard
+          </span>
+         </a>
+        </div>
+        <div class="menu-item">
+         <a class="menu-link" href="#">
+          <span class="menu-icon">
+           <i class="ki-filled ki-badge">
+           </i>
+          </span>
+          <span class="menu-title">
+           Public Profile
+          </span>
+         </a>
+        </div>
+        <div class="menu-item">
+         <a class="menu-link" href="#">
+          <span class="menu-icon">
+           <i class="ki-filled ki-profile-circle">
+           </i>
+          </span>
+          <span class="menu-title">
+           My Profile
+          </span>
+         </a>
+        </div>
+        <div class="menu-item">
+         <a class="menu-link" href="#">
+          <span class="menu-icon">
+           <i class="ki-filled ki-setting-2">
+           </i>
+          </span>
+          <span class="menu-title">
+           My Account
+          </span>
+         </a>
+        </div>
+        <div class="menu-item">
+         <a class="menu-link" href="#">
+          <span class="menu-icon">
+           <i class="ki-filled ki-message-programming">
+           </i>
+          </span>
+          <span class="menu-title">
+           Devs Forum
+          </span>
+         </a>
+        </div>
+        <div class="text-xs text-gray-600 font-medium pt-2.5 ps-5 pt-2.5 pb-1.5">
+         Actions
+        </div>
+        <div class="menu-item">
+         <a class="menu-link" href="#">
+          <span class="menu-icon">
+           <i class="ki-filled ki-user">
+           </i>
+          </span>
+          <span class="menu-title">
+           Create User
+          </span>
+         </a>
+        </div>
+        <div class="menu-item">
+         <a class="menu-link" href="#">
+          <span class="menu-icon">
+           <i class="ki-filled ki-user-edit">
+           </i>
+          </span>
+          <span class="menu-title">
+           Create Team
+          </span>
+         </a>
+        </div>
+        <div class="menu-item">
+         <a class="menu-link" href="#">
+          <span class="menu-icon">
+           <i class="ki-filled ki-subtitle">
+           </i>
+          </span>
+          <span class="menu-title">
+           Change Plan
+          </span>
+         </a>
+        </div>
+        <div class="menu-item">
+         <a class="menu-link" href="#">
+          <span class="menu-icon">
+           <i class="ki-filled ki-setting">
+           </i>
+          </span>
+          <span class="menu-title">
+           Setup Branding
+          </span>
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="hidden" id="search_modal_integrations">
+       <div class="menu menu-default p-0 flex-col">
+        <div class="menu-item">
+         <div class="menu-link flex items-center jistify-between gap-2">
+          <div class="flex items-center grow gap-2">
+           <div class="flex items-center justify-center size-10 shrink-0 rounded-full border border-gray-200 bg-gray-100">
+            <img alt="" class="size-6 shrink-0" src="assets/media/brand-logos/jira.svg">
+           </div>
+           <div class="flex flex-col gap-0.5">
+            <a class="text-2sm font-semibold text-gray-900 hover:text-primary-active" href="#">
+             Jira
+            </a>
+            <span class="text-2xs font-medium text-gray-600">
+             Project management
+            </span>
+           </div>
+          </div>
+          <div class="flex justify-end shrink-0">
+           <div class="flex -space-x-2">
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-4.png">
+            </div>
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-1.png">
+            </div>
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-2.png">
+            </div>
+            <div class="flex">
+             <span class="hover:z-5 relative inline-flex items-center justify-center shrink-0 rounded-full ring-1 font-semibold leading-none text-3xs size-6 text-success-inverse size-6 ring-success-light bg-success">
+              +3
+             </span>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="menu-item">
+         <div class="menu-link flex items-center jistify-between gap-2">
+          <div class="flex items-center grow gap-2">
+           <div class="flex items-center justify-center size-10 shrink-0 rounded-full border border-gray-200 bg-gray-100">
+            <img alt="" class="size-6 shrink-0" src="assets/media/brand-logos/inferno.svg">
+           </div>
+           <div class="flex flex-col gap-0.5">
+            <a class="text-2sm font-semibold text-gray-900 hover:text-primary-active" href="#">
+             Inferno
+            </a>
+            <span class="text-2xs font-medium text-gray-600">
+             Real-time photo sharing app
+            </span>
+           </div>
+          </div>
+          <div class="flex justify-end shrink-0">
+           <div class="flex -space-x-2">
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-14.png">
+            </div>
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-12.png">
+            </div>
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-9.png">
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="menu-item">
+         <div class="menu-link flex items-center jistify-between gap-2">
+          <div class="flex items-center grow gap-2">
+           <div class="flex items-center justify-center size-10 shrink-0 rounded-full border border-gray-200 bg-gray-100">
+            <img alt="" class="size-6 shrink-0" src="assets/media/brand-logos/evernote.svg">
+           </div>
+           <div class="flex flex-col gap-0.5">
+            <a class="text-2sm font-semibold text-gray-900 hover:text-primary-active" href="#">
+             Evernote
+            </a>
+            <span class="text-2xs font-medium text-gray-600">
+             Notes management app
+            </span>
+           </div>
+          </div>
+          <div class="flex justify-end shrink-0">
+           <div class="flex -space-x-2">
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-6.png">
+            </div>
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-3.png">
+            </div>
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-1.png">
+            </div>
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-8.png">
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="menu-item">
+         <div class="menu-link flex items-center jistify-between gap-2">
+          <div class="flex items-center grow gap-2">
+           <div class="flex items-center justify-center size-10 shrink-0 rounded-full border border-gray-200 bg-gray-100">
+            <img alt="" class="size-6 shrink-0" src="assets/media/brand-logos/gitlab.svg">
+           </div>
+           <div class="flex flex-col gap-0.5">
+            <a class="text-2sm font-semibold text-gray-900 hover:text-primary-active" href="#">
+             Gitlab
+            </a>
+            <span class="text-2xs font-medium text-gray-600">
+             Notes management app
+            </span>
+           </div>
+          </div>
+          <div class="flex justify-end shrink-0">
+           <div class="flex -space-x-2">
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-18.png">
+            </div>
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-17.png">
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="menu-item">
+         <div class="menu-link flex items-center jistify-between gap-2">
+          <div class="flex items-center grow gap-2">
+           <div class="flex items-center justify-center size-10 shrink-0 rounded-full border border-gray-200 bg-gray-100">
+            <img alt="" class="size-6 shrink-0" src="assets/media/brand-logos/google-webdev.svg">
+           </div>
+           <div class="flex flex-col gap-0.5">
+            <a class="text-2sm font-semibold text-gray-900 hover:text-primary-active" href="#">
+             Google webdev
+            </a>
+            <span class="text-2xs font-medium text-gray-600">
+             Building web expierences
+            </span>
+           </div>
+          </div>
+          <div class="flex justify-end shrink-0">
+           <div class="flex -space-x-2">
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-14.png">
+            </div>
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-20.png">
+            </div>
+            <div class="flex">
+             <img class="hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light size-6" src="assets/media/avatars/300-21.png">
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="menu-item px-4 pt-2">
+         <a class="btn btn-sm btn-light justify-center" href="#">
+          Go to Apps
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="hidden" id="search_modal_users">
+       <div class="menu menu-default p-0 flex-col">
+        <div class="grid gap-1">
+         <div class="menu-item">
+          <div class="menu-link flex justify-between gap-2">
+           <div class="flex items-center gap-2.5">
+            <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-3.png">
+            <div class="flex flex-col">
+             <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+              Tyler Hero
+             </a>
+             <span class="text-2sm font-normal text-gray-500">
+              tyler.hero@gmail.com connections
+             </span>
+            </div>
+           </div>
+           <div class="flex items-center gap-2.5">
+            <div class="badge badge-pill badge-outline badge-success gap-1.5">
+             <span class="badge badge-dot badge-success size-1.5">
+             </span>
+             In Office
+            </div>
+            <button class="btn btn-icon btn-light btn-clear btn-sm">
+             <i class="ki-filled ki-dots-vertical">
+             </i>
+            </button>
+           </div>
+          </div>
+         </div>
+         <div class="menu-item">
+          <div class="menu-link flex justify-between gap-2">
+           <div class="flex items-center gap-2.5">
+            <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-1.png">
+            <div class="flex flex-col">
+             <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+              Esther Howard
+             </a>
+             <span class="text-2sm font-normal text-gray-500">
+              esther.howard@gmail.com connections
+             </span>
+            </div>
+           </div>
+           <div class="flex items-center gap-2.5">
+            <div class="badge badge-pill badge-outline badge-danger gap-1.5">
+             <span class="badge badge-dot badge-danger size-1.5">
+             </span>
+             On Leave
+            </div>
+            <button class="btn btn-icon btn-light btn-clear btn-sm">
+             <i class="ki-filled ki-dots-vertical">
+             </i>
+            </button>
+           </div>
+          </div>
+         </div>
+         <div class="menu-item">
+          <div class="menu-link flex justify-between gap-2">
+           <div class="flex items-center gap-2.5">
+            <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-11.png">
+            <div class="flex flex-col">
+             <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+              Jacob Jones
+             </a>
+             <span class="text-2sm font-normal text-gray-500">
+              jacob.jones@gmail.com connections
+             </span>
+            </div>
+           </div>
+           <div class="flex items-center gap-2.5">
+            <div class="badge badge-pill badge-outline badge-primary gap-1.5">
+             <span class="badge badge-dot badge-primary size-1.5">
+             </span>
+             Remote
+            </div>
+            <button class="btn btn-icon btn-light btn-clear btn-sm">
+             <i class="ki-filled ki-dots-vertical">
+             </i>
+            </button>
+           </div>
+          </div>
+         </div>
+         <div class="menu-item">
+          <div class="menu-link flex justify-between gap-2">
+           <div class="flex items-center gap-2.5">
+            <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-5.png">
+            <div class="flex flex-col">
+             <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+              TLeslie Alexander
+             </a>
+             <span class="text-2sm font-normal text-gray-500">
+              leslie.alexander@gmail.com connections
+             </span>
+            </div>
+           </div>
+           <div class="flex items-center gap-2.5">
+            <div class="badge badge-pill badge-outline badge-success gap-1.5">
+             <span class="badge badge-dot badge-success size-1.5">
+             </span>
+             In Office
+            </div>
+            <button class="btn btn-icon btn-light btn-clear btn-sm">
+             <i class="ki-filled ki-dots-vertical">
+             </i>
+            </button>
+           </div>
+          </div>
+         </div>
+         <div class="menu-item">
+          <div class="menu-link flex justify-between gap-2">
+           <div class="flex items-center gap-2.5">
+            <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-2.png">
+            <div class="flex flex-col">
+             <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+              Cody Fisher
+             </a>
+             <span class="text-2sm font-normal text-gray-500">
+              cody.fisher@gmail.com connections
+             </span>
+            </div>
+           </div>
+           <div class="flex items-center gap-2.5">
+            <div class="badge badge-pill badge-outline badge-primary gap-1.5">
+             <span class="badge badge-dot badge-primary size-1.5">
+             </span>
+             Remote
+            </div>
+            <button class="btn btn-icon btn-light btn-clear btn-sm">
+             <i class="ki-filled ki-dots-vertical">
+             </i>
+            </button>
+           </div>
+          </div>
+         </div>
+         <div class="menu-item px-4 pt-2">
+          <a class="btn btn-sm btn-light justify-center" href="#">
+           Go to Users
+          </a>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="hidden" id="search_modal_docs">
+       <div class="menu menu-default p-0 flex-col">
+        <div class="grid">
+         <div class="menu-item">
+          <div class="menu-link flex items-center">
+           <div class="flex items-center grow gap-2.5">
+            <img src="assets/media/file-types/pdf.svg">
+            <div class="flex flex-col">
+             <span class="text-sm font-semibold text-gray-900 cursor-pointer hover:text-primary mb-px">
+              Project-pitch.pdf
+             </span>
+             <span class="text-xs font-medium text-gray-500">
+              4.7 MB 26 Sep 2024 3:20 PM
+             </span>
+            </div>
+           </div>
+           <button class="btn btn-icon btn-light btn-clear btn-sm">
+            <i class="ki-filled ki-dots-vertical">
+            </i>
+           </button>
+          </div>
+         </div>
+         <div class="menu-item">
+          <div class="menu-link flex items-center">
+           <div class="flex items-center grow gap-2.5">
+            <img src="assets/media/file-types/doc.svg">
+            <div class="flex flex-col">
+             <span class="text-sm font-semibold text-gray-900 cursor-pointer hover:text-primary mb-px">
+              Report-v1.docx
+             </span>
+             <span class="text-xs font-medium text-gray-500">
+              2.3 MB 1 Oct 2024 12:00 PM
+             </span>
+            </div>
+           </div>
+           <button class="btn btn-icon btn-light btn-clear btn-sm">
+            <i class="ki-filled ki-dots-vertical">
+            </i>
+           </button>
+          </div>
+         </div>
+         <div class="menu-item">
+          <div class="menu-link flex items-center">
+           <div class="flex items-center grow gap-2.5">
+            <img src="assets/media/file-types/javascript.svg">
+            <div class="flex flex-col">
+             <span class="text-sm font-semibold text-gray-900 cursor-pointer hover:text-primary mb-px">
+              Framework-App.js
+             </span>
+             <span class="text-xs font-medium text-gray-500">
+              0.8 MB 17 Oct 2024 6:46 PM
+             </span>
+            </div>
+           </div>
+           <button class="btn btn-icon btn-light btn-clear btn-sm">
+            <i class="ki-filled ki-dots-vertical">
+            </i>
+           </button>
+          </div>
+         </div>
+         <div class="menu-item">
+          <div class="menu-link flex items-center">
+           <div class="flex items-center grow gap-2.5">
+            <img src="assets/media/file-types/ai.svg">
+            <div class="flex flex-col">
+             <span class="text-sm font-semibold text-gray-900 cursor-pointer hover:text-primary mb-px">
+              Framework-App.js
+             </span>
+             <span class="text-xs font-medium text-gray-500">
+              0.8 MB 17 Oct 2024 6:46 PM
+             </span>
+            </div>
+           </div>
+           <button class="btn btn-icon btn-light btn-clear btn-sm">
+            <i class="ki-filled ki-dots-vertical">
+            </i>
+           </button>
+          </div>
+         </div>
+         <div class="menu-item">
+          <div class="menu-link flex items-center">
+           <div class="flex items-center grow gap-2.5">
+            <img src="assets/media/file-types/php.svg">
+            <div class="flex flex-col">
+             <span class="text-sm font-semibold text-gray-900 cursor-pointer hover:text-primary mb-px">
+              appController.js
+             </span>
+             <span class="text-xs font-medium text-gray-500">
+              0.1 MB 21 Nov 2024 3:20 PM
+             </span>
+            </div>
+           </div>
+           <button class="btn btn-icon btn-light btn-clear btn-sm">
+            <i class="ki-filled ki-dots-vertical">
+            </i>
+           </button>
+          </div>
+         </div>
+         <div class="menu-item px-4 pt-2.5">
+          <a class="btn btn-sm btn-light justify-center" href="#">
+           Go to Users
+          </a>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="hidden" id="search_modal_empty">
+       <div class="flex flex-col text-center py-9 gap-5">
+        <div class="flex justify-center">
+         <img alt="image" class="dark:hidden max-h-[113px]" src="assets/media/illustrations/33.svg">
+         <img alt="image" class="light:hidden max-h-[113px]" src="assets/media/illustrations/33-dark.svg">
+        </div>
+        <div class="flex flex-col gap-1.5">
+         <h3 class="text-base font-semibold text-gray-900 text-center">
+          Looking for something..
+         </h3>
+         <span class="text-2sm font-medium text-center text-gray-600">
+          Initiate your digital experience with
+          <br>
+          our intuitive dashboard
+         </span>
+        </div>
+        <div class="flex justify-center">
+         <a class="btn btn-sm btn-light flex justify-center" href="#">
+          View Projects
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="hidden" id="search_modal_no-results">
+       <div class="flex flex-col text-center py-9 gap-5">
+        <div class="flex justify-center">
+         <img alt="image" class="dark:hidden max-h-[113px]" src="assets/media/illustrations/33.svg">
+         <img alt="image" class="light:hidden max-h-[113px]" src="assets/media/illustrations/33-dark.svg">
+        </div>
+        <div class="flex flex-col gap-1.5">
+         <h3 class="text-base font-semibold text-gray-900 text-center">
+          No Results Found
+         </h3>
+         <span class="text-2sm font-medium text-center text-gray-600">
+          Refine your query to discover relevant items
+         </span>
+        </div>
+        <div class="flex justify-center">
+         <a class="btn btn-sm btn-light flex justify-center" href="#">
+          View Projects
+         </a>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="modal" data-modal="true" data-modal-disable-scroll="false" id="share_profile_modal">
+   <div class="modal-content max-w-[500px] top-5 lg:top-[15%]">
+    <div class="modal-header pr-2.5">
+     <h3 class="modal-title">
+      Share Profile
+     </h3>
+     <button class="btn btn-sm btn-icon btn-light btn-clear shrink-0" data-modal-dismiss="true">
+      <i class="ki-filled ki-cross">
+      </i>
+     </button>
+    </div>
+    <div class="modal-body grid gap-5 px-0 py-5">
+     <div class="flex flex-col px-5 gap-2.5">
+      <div class="flex flex-center gap-1">
+       <label class="text-gray-900 font-semibold text-2sm">
+        Share read-only link
+       </label>
+       <i class="ki-filled ki-information-2 text-gray-500 text-2sm">
+       </i>
+      </div>
+      <label class="input">
+       <input type="text" value="https://metronic.com/profiles/x7g2vA3kZ5">
+        <button class="btn btn-icon">
+         <i class="ki-filled ki-copy">
+         </i>
+        </button>
+       
+      </label>
+     </div>
+     <div class="border-b border-b-gray-200">
+     </div>
+     <div class="flex flex-col px-5 gap-2.5">
+      <div class="flex flex-center gap-1">
+       <label class="text-gray-900 font-semibold text-2sm">
+        Share via email
+       </label>
+       <i class="ki-filled ki-information-2 text-gray-500 text-2sm">
+       </i>
+      </div>
+      <div class="flex flex-center gap-2.5">
+       <label class="input">
+        <input type="text" value="miles.turner@gmail.com">
+        
+       </label>
+       <button class="btn btn-primary">
+        Share
+       </button>
+      </div>
+     </div>
+     <div class="scrollable-y-auto" data-scrollable="true" data-scrollable-max-height="auto" data-scrollable-offset="1000px" style="max-height: 81px;">
+      <div class="flex flex-col px-5 gap-3">
+       <div class="flex items-center flex-wrap gap-2">
+        <div class="flex items-center grow gap-2.5">
+         <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-3.png">
+         <div class="flex flex-col">
+          <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+           Tyler Hero
+          </a>
+          <a class="hover:text-primary-active text-2sm font-medium text-gray-600" href="#">
+           tyler.hero@gmail.com
+          </a>
+         </div>
+        </div>
+        <select class="select select-sm max-w-24">
+         <option selected="">
+          Owner
+         </option>
+         <option>
+          Editor
+         </option>
+         <option>
+          Viewer
+         </option>
+        </select>
+       </div>
+       <div class="flex items-center flex-wrap gap-2">
+        <div class="flex items-center grow gap-2.5">
+         <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-1.png">
+         <div class="flex flex-col">
+          <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+           Esther Howard
+          </a>
+          <a class="hover:text-primary-active text-2sm font-medium text-gray-600" href="#">
+           esther.howard@gmail.com
+          </a>
+         </div>
+        </div>
+        <select class="select select-sm max-w-24">
+         <option>
+          Owner
+         </option>
+         <option selected="">
+          Editor
+         </option>
+         <option>
+          Viewer
+         </option>
+        </select>
+       </div>
+       <div class="flex items-center flex-wrap gap-2">
+        <div class="flex items-center grow gap-2.5">
+         <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-11.png">
+         <div class="flex flex-col">
+          <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+           Jacob Jones
+          </a>
+          <a class="hover:text-primary-active text-2sm font-medium text-gray-600" href="#">
+           jacob.jones@gmail.com
+          </a>
+         </div>
+        </div>
+        <select class="select select-sm max-w-24">
+         <option>
+          Owner
+         </option>
+         <option>
+          Editor
+         </option>
+         <option selected="">
+          Viewer
+         </option>
+        </select>
+       </div>
+      </div>
+     </div>
+     <div class="border-b border-b-gray-200">
+     </div>
+     <div class="flex flex-col px-5 gap-4">
+      <label class="text-gray-900 font-semibold text-2sm">
+       Settings
+      </label>
+      <div class="flex flex-center justify-between flex-wrap gap-2">
+       <div class="flex flex-center gap-1.5">
+        <i class="ki-filled ki-user text-gray-500">
+        </i>
+        <div class="flex flex-center text-gray-700 font-medium text-xs">
+         Anyone at
+         <a class="text-xs font-medium link mx-1" href="#">
+          heinnz
+         </a>
+         can view
+        </div>
+       </div>
+       <button class="btn btn-sm btn-link">
+        Change Access
+       </button>
+      </div>
+      <div class="flex flex-center justify-between flex-wrap gap-2 mb-1">
+       <div class="flex flex-center gap-1.5">
+        <i class="ki-filled ki-icon text-gray-500">
+        </i>
+        <div class="flex flex-center text-gray-700 font-medium text-xs">
+         Anyone with link can edit
+        </div>
+       </div>
+       <button class="btn btn-sm btn-link">
+        Set Password
+       </button>
+      </div>
+      <button class="btn btn-primary justify-center">
+       Done
+      </button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="modal" data-modal="true" id="give_award_modal">
+   <div class="modal-content max-w-[500px] top-[15%]">
+    <div class="modal-header pr-2.5">
+     <h3 class="modal-title">
+      Give Award
+     </h3>
+     <button class="btn btn-sm btn-icon btn-light btn-clear shrink-0" data-modal-dismiss="true">
+      <i class="ki-filled ki-black-left">
+      </i>
+     </button>
+    </div>
+    <div class="modal-body grid gap-5 px-0 py-5">
+     <div class="flex flex-col px-5 gap-2.5">
+      <div class="flex flex-center gap-1">
+       <label class="text-gray-900 font-semibold text-2sm">
+        Share read-only link
+       </label>
+       <i class="ki-filled ki-information-2 text-gray-500 text-2sm">
+       </i>
+      </div>
+      <label class="input">
+       <input type="text" value="https://metronic.com/profiles/x7g2vA3kZ5">
+        <button class="btn btn-icon">
+         <i class="ki-filled ki-copy">
+         </i>
+        </button>
+       
+      </label>
+     </div>
+     <div class="border-b border-b-gray-200">
+     </div>
+     <div class="flex flex-col px-5 gap-2.5">
+      <div class="flex flex-center gap-1">
+       <label class="text-gray-900 font-semibold text-2sm">
+        Share via email
+       </label>
+       <i class="ki-filled ki-information-2 text-gray-500 text-2sm">
+       </i>
+      </div>
+      <div class="flex flex-center gap-2.5">
+       <label class="input">
+        <input type="text" value="miles.turner@gmail.com">
+        
+       </label>
+       <button class="btn btn-primary">
+        Share
+       </button>
+      </div>
+     </div>
+     <div class="scrollable-y-auto" data-scrollable="true" data-scrollable-max-height="auto" data-scrollable-offset="1000px" style="max-height: 81px;">
+      <div class="flex flex-col px-5 gap-3">
+       <div class="flex items-center flex-wrap gap-2">
+        <div class="flex items-center grow gap-2.5">
+         <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-3.png">
+         <div class="flex flex-col">
+          <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+           Tyler Hero
+          </a>
+          <a class="hover:text-primary-active text-2sm font-medium text-gray-600" href="#">
+           tyler.hero@gmail.com
+          </a>
+         </div>
+        </div>
+        <select class="select select-sm max-w-24">
+         <option selected="">
+          Owner
+         </option>
+         <option>
+          Editor
+         </option>
+         <option>
+          Viewer
+         </option>
+        </select>
+       </div>
+       <div class="flex items-center flex-wrap gap-2">
+        <div class="flex items-center grow gap-2.5">
+         <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-1.png">
+         <div class="flex flex-col">
+          <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+           Esther Howard
+          </a>
+          <a class="hover:text-primary-active text-2sm font-medium text-gray-600" href="#">
+           esther.howard@gmail.com
+          </a>
+         </div>
+        </div>
+        <select class="select select-sm max-w-24">
+         <option>
+          Owner
+         </option>
+         <option selected="">
+          Editor
+         </option>
+         <option>
+          Viewer
+         </option>
+        </select>
+       </div>
+       <div class="flex items-center flex-wrap gap-2">
+        <div class="flex items-center grow gap-2.5">
+         <img alt="" class="rounded-full size-9 shrink-0" src="assets/media/avatars/300-11.png">
+         <div class="flex flex-col">
+          <a class="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px" href="#">
+           Jacob Jones
+          </a>
+          <a class="hover:text-primary-active text-2sm font-medium text-gray-600" href="#">
+           jacob.jones@gmail.com
+          </a>
+         </div>
+        </div>
+        <select class="select select-sm max-w-24">
+         <option>
+          Owner
+         </option>
+         <option>
+          Editor
+         </option>
+         <option selected="">
+          Viewer
+         </option>
+        </select>
+       </div>
+      </div>
+     </div>
+     <div class="border-b border-b-gray-200">
+     </div>
+     <div class="flex flex-col px-5 gap-4">
+      <label class="text-gray-900 font-semibold text-2sm">
+       Settings
+      </label>
+      <div class="flex flex-center justify-between flex-wrap gap-2">
+       <div class="flex flex-center gap-1.5">
+        <i class="ki-filled ki-user text-gray-500">
+        </i>
+        <div class="flex flex-center text-gray-700 font-medium text-xs">
+         Anyone at
+         <a class="text-xs font-medium link mx-1" href="#">
+          heinnz
+         </a>
+         can view
+        </div>
+       </div>
+       <button class="btn btn-sm btn-link">
+        Change Access
+       </button>
+      </div>
+      <div class="flex flex-center justify-between flex-wrap gap-2 mb-1">
+       <div class="flex flex-center gap-1.5">
+        <i class="ki-filled ki-icon text-gray-500">
+        </i>
+        <div class="flex flex-center text-gray-700 font-medium text-xs">
+         Anyone with link can edit
+        </div>
+       </div>
+       <button class="btn btn-sm btn-link">
+        Set Password
+       </button>
+      </div>
+      <button class="btn btn-primary justify-center">
+       Done
+      </button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="modal" data-modal="true" id="report_user_modal">
+   <div class="modal-content max-w-[500px] top-[15%]">
+    <div class="modal-header pr-2.5">
+     <h3 class="modal-title">
+      Report User
+     </h3>
+     <button class="btn btn-sm btn-icon btn-light btn-clear shrink-0" data-modal-dismiss="true">
+      <i class="ki-filled ki-cross">
+      </i>
+     </button>
+    </div>
+    <div class="modal-body p-0">
+     <div class="p-5">
+      <div class="grid place-items-center gap-1">
+       <div class="flex justify-center items-center rounded-full">
+        <img class="rounded-full max-h-[55px] max-w-full" src="assets/media/avatars/300-1.png">
+       </div>
+       <div class="flex items-center justify-center gap-1">
+        <a class="hover:text-primary-active text-2sm leading-5 font-semibold text-gray-900" href="#">
+         Jenny Klabber
+        </a>
+        <svg class="text-primary" fill="none" height="13" viewBox="0 0 15 16" width="13" xmlns="http://www.w3.org/2000/svg">
+         <path d="M14.5425 6.89749L13.5 5.83999C13.4273 5.76877 13.3699 5.6835 13.3312 5.58937C13.2925 5.49525 13.2734 5.39424 13.275 5.29249V3.79249C13.274 3.58699 13.2324 3.38371 13.1527 3.19432C13.0729 3.00494 12.9565 2.83318 12.8101 2.68892C12.6638 2.54466 12.4904 2.43073 12.2998 2.35369C12.1093 2.27665 11.9055 2.23801 11.7 2.23999H10.2C10.0982 2.24159 9.99722 2.22247 9.9031 2.18378C9.80898 2.1451 9.72371 2.08767 9.65249 2.01499L8.60249 0.957487C8.30998 0.665289 7.91344 0.50116 7.49999 0.50116C7.08654 0.50116 6.68999 0.665289 6.39749 0.957487L5.33999 1.99999C5.26876 2.07267 5.1835 2.1301 5.08937 2.16879C4.99525 2.20747 4.89424 2.22659 4.79249 2.22499H3.29249C3.08699 2.22597 2.88371 2.26754 2.69432 2.34731C2.50494 2.42709 2.33318 2.54349 2.18892 2.68985C2.04466 2.8362 1.93073 3.00961 1.85369 3.20013C1.77665 3.39064 1.73801 3.5945 1.73999 3.79999V5.29999C1.74159 5.40174 1.72247 5.50275 1.68378 5.59687C1.6451 5.691 1.58767 5.77627 1.51499 5.84749L0.457487 6.89749C0.165289 7.19 0.00115967 7.58654 0.00115967 7.99999C0.00115967 8.41344 0.165289 8.80998 0.457487 9.10249L1.49999 10.16C1.57267 10.2312 1.6301 10.3165 1.66878 10.4106C1.70747 10.5047 1.72659 10.6057 1.72499 10.7075V12.2075C1.72597 12.413 1.76754 12.6163 1.84731 12.8056C1.92709 12.995 2.04349 13.1668 2.18985 13.3111C2.3362 13.4553 2.50961 13.5692 2.70013 13.6463C2.89064 13.7233 3.0945 13.762 3.29999 13.76H4.79999C4.90174 13.7584 5.00275 13.7775 5.09687 13.8162C5.191 13.8549 5.27627 13.9123 5.34749 13.985L6.40499 15.0425C6.69749 15.3347 7.09404 15.4988 7.50749 15.4988C7.92094 15.4988 8.31748 15.3347 8.60999 15.0425L9.65999 14C9.73121 13.9273 9.81647 13.8699 9.9106 13.8312C10.0047 13.7925 10.1057 13.7734 10.2075 13.775H11.7075C12.1212 13.775 12.518 13.6106 12.8106 13.3181C13.1031 13.0255 13.2675 12.6287 13.2675 12.215V10.715C13.2659 10.6132 13.285 10.5122 13.3237 10.4181C13.3624 10.324 13.4198 10.2387 13.4925 10.1675L14.55 9.10999C14.6953 8.96452 14.8104 8.79176 14.8887 8.60164C14.9671 8.41152 15.007 8.20779 15.0063 8.00218C15.0056 7.79656 14.9643 7.59311 14.8847 7.40353C14.8051 7.21394 14.6888 7.04197 14.5425 6.89749ZM10.635 6.64999L6.95249 10.25C6.90055 10.3026 6.83864 10.3443 6.77038 10.3726C6.70212 10.4009 6.62889 10.4153 6.55499 10.415C6.48062 10.4139 6.40719 10.3982 6.33896 10.3685C6.27073 10.3389 6.20905 10.2961 6.15749 10.2425L4.37999 8.44249C4.32532 8.39044 4.28169 8.32793 4.25169 8.25867C4.22169 8.18941 4.20593 8.11482 4.20536 8.03934C4.20479 7.96387 4.21941 7.88905 4.24836 7.81934C4.27731 7.74964 4.31999 7.68647 4.37387 7.63361C4.42774 7.58074 4.4917 7.53926 4.56194 7.51163C4.63218 7.484 4.70726 7.47079 4.78271 7.47278C4.85816 7.47478 4.93244 7.49194 5.00112 7.52324C5.0698 7.55454 5.13148 7.59935 5.18249 7.65499L6.56249 9.05749L9.84749 5.84749C9.95296 5.74215 10.0959 5.68298 10.245 5.68298C10.394 5.68298 10.537 5.74215 10.6425 5.84749C10.6953 5.90034 10.737 5.96318 10.7653 6.03234C10.7935 6.1015 10.8077 6.1756 10.807 6.25031C10.8063 6.32502 10.7908 6.39884 10.7612 6.46746C10.7317 6.53608 10.6888 6.59813 10.635 6.64999Z" fill="currentColor">
+         </path>
+        </svg>
+       </div>
+      </div>
+     </div>
+     <div class="border-b border-b-gray-200">
+     </div>
+     <div class="flex flex-col gap-5 p-5">
+      <div class="text-2sm text-gray-900 font-semibold">
+       Let us know why you’re reporing this person
+      </div>
+      <div class="flex flex-col gap-3.5">
+       <label class="form-label flex items-center gap-2.5">
+        <input checked="" class="radio radio-sm" name="report-option" type="radio" value="1">
+         <div class="flex flex-col gap-0.5">
+          <div class="text-sm font-semibold text-gray-900">
+           Impersonation
+          </div>
+          <div class="text-2sm font-medium text-gray-600">
+           It looks like this profile might be impersonating someone else
+          </div>
+         </div>
+        
+       </label>
+       <label class="form-label flex items-center gap-2.5">
+        <input checked="" class="radio radio-sm" name="report-option" type="radio" value="2">
+         <div class="flex flex-col gap-0.5">
+          <div class="text-sm font-semibold text-gray-900">
+           Spammy
+          </div>
+          <div class="text-2sm font-medium text-gray-600">
+           This person profile, comments or posts contain misleading text
+          </div>
+         </div>
+        
+       </label>
+       <label class="form-label flex items-center gap-2.5">
+        <input checked="" class="radio radio-sm" name="report-option" type="radio" value="3">
+         <div class="flex flex-col gap-0.5">
+          <div class="text-sm font-semibold text-gray-900">
+           Off bumble behavior
+          </div>
+          <div class="text-2sm font-medium text-gray-600">
+           This person has engaged in behavior that is abusive, bullying
+          </div>
+         </div>
+        
+       </label>
+       <label class="form-label flex items-center gap-2.5">
+        <input checked="" class="radio radio-sm" name="report-option" type="radio" value="4">
+         <div class="flex flex-col gap-0.5">
+          <div class="text-sm font-semibold text-gray-900">
+           Something else
+          </div>
+          <div class="text-2sm font-medium text-gray-600">
+           None of the reasons listed above are suitable
+          </div>
+         </div>
+        
+       </label>
+      </div>
+     </div>
+     <div class="border-b border-b-gray-200">
+     </div>
+     <div class="text-2sm font-medium text-center text-gray-800 p-5">
+      Don't worry, your report is completely anonymous; the person you're
+      <br>
+      reporting will not be informed that you've submitted it
+     </div>
+     <div class="border-b border-b-gray-200">
+     </div>
+     <div class="flex items-center gap-2.5 justify-end p-5" id="report_user_modal">
+      <button class="btn btn-sm btn-primary">
+       Report this person
+      </button>
+      <button class="btn btn-sm btn-light" data-modal-dismiss="true">
+       Cancel
+      </button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- End of Page -->
+  <!-- Scripts -->
+  <script src="assets/js/core.bundle.js">
+  </script>
+  <script src="assets/vendors/apexcharts/apexcharts.min.js">
+  </script>
+  <script src="assets/js/widgets/general.js">
+  </script>
+  <!-- End of Scripts -->
+ 
+
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="2" height="0" focusable="false" aria-hidden="true" style="opacity: 0; position: absolute; left: -100%; top: -100%; overflow: hidden;"><path d="M0 0 "></path></svg>
+<div id="rm-highlighter-container" class="rm-reset-flex no-print">
+	<div id="rm-highlighter-menu" style="display: none;">
+		<!--
+			<div data-rm-action="clear-all" style="display:">Clear all</div>
+		-->
+	</div>
+	<div id="rm-highlighter-menu-update">
+	</div>
+
+	<div id="rm-highlighter-menu-list" style="display:none;">
+		<div class="rm-highlighter-menu-li rm-m-t-1" data-menu="highlight" data-menu-details="#rm-highlight-form">
+			<div id="rm-highlight-color-selected" class="rm-highlight-color" data-highlight-color="red" data-rm-action="select-color"></div>
+		</div>
+		<div class="rm-highlighter-menu-li" data-rm-action="view-selection" data-menu="view-selection">		
+			<div data-rm-img="view-selection" data-rm-img-ext="svg"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/view-selection.svg"></div> 
+		</div>
+		<div class="rm-highlighter-menu-li" data-rm-action="tts-toggle-start-hm" data-menu="tts">
+			<div data-rm-img="play-round" data-rm-img-ext="svg"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/play-round.svg"></div> 
+		</div>
+		<div class="rm-highlighter-menu-li" data-rm-action="google-translate" data-menu="google-translate">		
+			<div data-rm-img="google-translate" data-rm-img-ext="svg"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/google-translate.svg"></div> 
+		</div>
+		<div class="rm-highlighter-menu-li" data-rm-action="tweet" data-menu="tweet">
+			<div data-rm-img="twitter" data-rm-img-ext="svg"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/twitter.svg"></div> 
+		</div>	
+		<div class="rm-highlighter-menu-li" data-rm-action="open-page" data-page-name="options" data-menu="settings">
+			<div data-rm-img="settings" data-rm-img-ext="svg"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/settings.svg"></div> 
+		</div>	
+	</div>
+
+	<div id="rm-highlighter-menu-details" style="display:none">
+		<div id="rm-highlight-form" class="rm-highlighter-menu-details" data-position-bottom="-200px" style="display:none">
+			<div class="rm-p-7 rm-p-b-1i">
+				<textarea id="rm-highlight-note" placeholder="Take a note..." autocomplete="off" spellcheck="false"></textarea>
+
+				<div id="rm-highlighter-colors" class="rm-m-t-4 rm-m-l-0">
+					<div class="rm-highlight-color rm-m-l-3i" data-rm-img="pencil" data-rm-img-ext="svg" data-rm-action="toggle-highlight-settings-iframe"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/pencil.svg"></div>
+				</div>
+			</div>
+
+			<div id="rm-highlight-form-footer" class="p-7">
+				<div id="rm-highlight-folder" data-rm-action="toggle-bookmark-iframe">
+					<div class="rm-display-inline-block" data-rm-img="folder" data-rm-img-ext="svg"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/folder.svg"></div> 
+					<div class="rm-highlight-folder-name">Everything</div>
+				</div> 
+				<div class="btn-update btn-xs rm-btn rm-btn-light" data-rm-action="update" style="display:none">Update</div>
+			</div>	
+		</div>		
+	</div>	
+</div><div id="rm-toolbar" class="rm-toolbar rm-toolbar-dark rm-toolbar-expand rm-fixed-top no-print" style="display: none;">
+	<div class="rm-toolbar-nav rm-mr-auto no-print">
+		<div class="rm-toolbar-nav-logo rm-cursor-pointer" data-rm-img="icon" data-rm-img-ext="png" data-rm-action="redirect-to-home"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/png/icon.png"></div>
+
+      	<div class="rm-btn-group" role="group" style="display:none">
+			<div class="rm-btn rm-btn-sm btn-secondary" data-rm-action="tts-start">
+				<i class="fas fa-play"></i>
+			</div>
+			<div class="rm-btn rm-btn-sm btn-secondary" data-rm-action="tts-stop">
+				<i class="fas fa-stop"></i>
+			</div>
+		</div>
+    </div>
+
+	<div class="rm-ul rm-toolbar-nav rm-ml-auto">
+		<div class="rm-li tlite-tooltip" title="Listen">
+			<button type="button" class="rm-btn-nav rm-img-22 rm-m-t--1i" data-rm-img="headphones" data-rm-img-ext="svg" data-rm-action="tts-toggle-start"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/headphones.svg"></button>		
+		</div>		
+		<div class="rm-li tlite-tooltip" title="Edit">
+		  <button type="button" class="rm-btn-nav rm-img-20" data-rm-img="edit-text-file-2" data-rm-img-ext="svg" data-rm-action="editing-mode-start"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/edit-text-file-2.svg"></button>
+		</div>
+		<div class="rm-li tlite-tooltip" title="Delete items">
+		  <button type="button" class="rm-btn-nav rm-img-21" data-rm-img="erase" data-rm-img-ext="svg" data-rm-action="deletion-mode-start"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/erase.svg"></button>
+		</div>
+		<div class="rm-li tlite-tooltip" title="Translate" id="rm-translate-toggle" data-toggle="true" data-target="#rm-translate">
+		  <button type="button" class="rm-btn-nav" data-rm-img="translation" data-rm-img-ext="svg"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/translation.svg"></button>
+		</div>
+		<div class="rm-li tlite-tooltip" title="Print">
+		  <button type="button" class="rm-btn-nav" data-rm-img="print" data-rm-img-ext="svg" data-rm-action="print"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/print.svg"></button>
+		</div>
+		<div class="rm-li tlite-tooltip" title="Scroll">
+		  <button type="button" class="rm-btn-nav rm-img" data-rm-img="scroll-down" data-rm-img-ext="svg" data-rm-action="autoscroll"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/scroll-down.svg"></button>
+		</div>
+		<div class="rm-li tlite-tooltip" title="Settings" id="rm-main-settings-toggle" data-toggle="true" data-target="#rm-main-settings">
+		    <button type="button" class="rm-btn-nav" data-rm-img="tune" data-rm-img-ext="svg"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/tune.svg"></button>
+		</div>
+		<div class="rm-li tlite-tooltip" title="Save Bookmark">
+		  <button type="button" class="rm-btn-nav" data-rm-img="bookmark-2" data-rm-img-ext="svg" data-rm-job="toggle-iframe" data-rm-params="{&quot;iframe_name&quot;:&quot;bookmark&quot;}"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/bookmark-2.svg"></button>
+		</div>
+		<div class="rm-li tlite-tooltip" title="Fullscreen">
+		  <button type="button" class="rm-btn-nav" data-rm-action="fullscreen-toggle" data-rm-img="expand" data-rm-img-ext="svg"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/expand.svg"></button>
+		</div>
+		<div class="rm-li tlite-tooltip" title="Close">
+		  <button type="button" class="rm-btn-nav" data-rm-img="close" data-rm-img-ext="svg" data-rm-job="hide-iframe" data-rm-params="{&quot;iframe_name&quot;:&quot;reader&quot;}"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/close.svg"></button>
+		</div>
+	</div>
+
+	<div id="rm-toolbar-toggle" class="rm-cursor-pointer">
+		<i class="fas fa-chevron-up"></i>
+	</div>	
+</div>
+
+<div id="rm-toolbar-tts" class="rm-toolbar rm-toolbar-dark rm-toolbar-expand rm-fixed-top no-print" style="display:none">
+	<div class="rm-toolbar-nav rm-mr-auto no-print">
+		<div class="rm-tts-wave" style="display:">
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		</div>
+
+		<div class="rm-tts-wave-active" style="display:none">
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		    <span class="rm-tts-wave-stroke"></span>
+		</div>
+	</div>
+		
+	<div class="rm-ul rm-toolbar-nav rm-toolbar-nav-center rm-ml-auto">
+		<div class="rm-li tlite-tooltip" title="Previous">
+			<button type="button" class="rm-btn-nav rm-img-20" data-rm-img="skip-to-start" data-rm-img-ext="svg" data-rm-action="tts-previous"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/skip-to-start.svg"></button>
+		</div>
+		<div class="rm-li tlite-tooltip" title="Play/Pause">
+			<button type="button" class="rm-btn-nav rm-img-20" data-rm-img="play" data-rm-img-ext="svg" data-rm-action="tts-start"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/play.svg"></button>
+			<button type="button" class="rm-btn-nav rm-img-20" data-rm-img="pause" data-rm-img-ext="svg" data-rm-action="tts-stop" style="display:none"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/pause.svg"></button>
+		</div>	
+		<div class="rm-li tlite-tooltip" title="Forward">
+			<button type="button" class="rm-btn-nav rm-img-20" data-rm-img="end" data-rm-img-ext="svg" data-rm-action="tts-forward"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/end.svg"></button>
+		</div>	
+	</div>	
+
+	<div class="rm-ul rm-toolbar-nav rm-ml-auto">
+		<div class="rm-li">
+			<button type="button" class="rm-btn-nav rm-img-20" data-rm-img="audio" data-rm-img-ext="svg" data-rm-img-classes="rm-float-left rm-m-t-2 rm-m-r-2" data-rm-action="tts-settings"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/audio.svg" class="rm-float-left rm-m-t-2 rm-m-r-2"><span class="rm-m-l-5 rm-btn-nav-text rm-display-inline-block rm-float-left">Voice options</span></button>
+		</div>
+		<div class="rm-li tlite-tooltip" title="Close TTS">
+		  <button type="button" class="rm-btn-nav" data-rm-img="close" data-rm-img-ext="svg" data-rm-action="tts-toggle-stop"><img src="chrome-extension://llimhhconnjiflfimocjggfjdlmlhblm/img/svg/close.svg"></button>
+		</div>
+	</div>	
+</div>	
+
+<div id="rm-main-settings" class="rm-toolbar-aside" data-toggle-target="true" data-parent="#rm-main-settings-toggle" style="display:none">
+	<div class="rm-accordion">
+	  	<div class="rm-card">
+		    <div class="rm-card-header rm-hover-brightness" data-target="#rm-text-settings">
+		    	<span class="rm-m-l--3 rm-m-r-3"><b>Aa</b></span> TYPOGRAPHY
+		    </div>
+		    <div id="rm-text-settings" class="rm-card-body show" data-parent="#rm-main-settings">
+				<label class="rm-label">Font</label>
+				<select class="custom-select rm-custom-select rm-border-0i" name="font_family" data-css="true" data-css-elem="*">
+					<option value="arial">Arial</option>
+					<option value="arial black">Arial Black</option>
+					<option value="athelas">Athelas</option>
+					<option value="comic sans ms">Comic Sans MS</option>
+					<option value="courier new">Courier New</option>
+					<option value="courier">Courier</option>
+					<option value="didot">Didot</option>
+					<option value="georgia">Georgia</option>
+					<option value="gill sans">Gill Sans</option>
+					<option value="helvetica" selected="">Helvetica</option>
+					<option value="impact">Impact</option>
+					<option value="iowan old style">Iowan Old Style</option>
+					<option value="palatino">Palatino</option>
+					<option value="optima">Optima</option>
+					<option value="sans-serif">Sans-serif</option>
+					<option value="sassoon-primary">Sassoon Primary</option>
+					<option value="seravek">Seravek</option>
+					<option value="serif">Serif</option>
+					<option value="times new roman">Times New Roman</option>
+					<option value="trebuchet ms">Trebuchet MS</option>
+					<option value="opendyslexic">OpenDyslexic</option>
+					<option value="opendyslexic-mono">OpenDyslexic Mono</option>
+					<option value="opendyslexic-bold">OpenDyslexic Bold</option>
+					<option value="opendyslexic-italic">OpenDyslexic Italic</option>
+					<option value="opendyslexic-bold-italic">OpenDyslexic BoldItalic</option>
+					<option value="lexend-deca">LexendDeca</option>
+					<option value="lexend-exa">Lexend Exa</option>
+					<option value="lexend-giga">Lexend Giga</option>
+					<option value="lexend-mega">Lexend Mega</option>
+					<option value="lexend-peta">Lexend Peta</option>
+					<option value="lexend-tera">Lexend Tera</option>
+					<option value="lexend-zetta">Lexend Zetta</option>
+					<option value="lexie-readable">LexieReadable</option>
+					<option value="lexie-readable-bold">LexieReadable Bold</option>
+					<option value="lora">Lora</option>
+					<option value="lora-bold">Lora Bold</option>
+					<option value="lora-italic">Lora Italic</option>
+					<option value="lora-bold-italic">Lora BoldItalic</option>
+					<option value="verdana">Verdana</option>
+				</select>
+
+				<label class="rm-label rm-m-t-22 rm-m-b-12">Text Align</label>
+				<table id="rm-text-align" class="rm-full-width">
+					<tbody><tr>
+						<td class="rm-width-15 active">
+							<i class="fas fa-align-left"></i> <br>
+							<input type="radio" name="text_align" data-css="true" data-css-elem="*" value="left" checked="checked" style="display:none">
+						</td>
+						<td class="rm-width-15">
+							<i class="fas fa-align-center"></i> <br>
+							<input type="radio" name="text_align" data-css="true" data-css-elem="*" value="center" style="display:none">
+						</td>	
+						<td class="rm-width-15">
+							<i class="fas fa-align-right"></i> <br>
+							<input type="radio" name="text_align" data-css="true" data-css-elem="*" value="right" style="display:none">
+						</td>	
+						<td>
+							<i class="fas fa-align-justify"></i> <br>
+							<input type="radio" name="text_align" data-css="true" data-css-elem="*" value="justify" style="display:none">
+						</td>	
+					</tr>		
+				</tbody></table>	
+
+				<label class="rm-label rm-m-t-22 rm-m-b-12">Text Size</label>
+				<div class="rm-range-control">
+				    <input type="range" name="font_size" data-css="true" data-css-elem="*" data-css-postfix="px" min="12" max="100" step="1" value="19" data-thumbwidth="19">
+				    <output name="rangeVal">19</output>
+			  	</div>
+
+			  	<label class="rm-label rm-m-t-22 rm-m-b-12">Line Height</label>
+				<div class="rm-range-control">
+				    <input type="range" name="line_height" data-css="true" data-css-elem="*" data-css-postfix="px" min="10" max="100" step="1" value="30" data-thumbwidth="30">
+				    <output name="rangeVal">30</output>
+			  	</div>
+
+			  	<label class="rm-label rm-m-t-25 rm-m-b-12">Letter Spacing</label>
+				<div class="rm-range-control">
+				    <input type="range" name="letter_spacing" data-css="true" data-css-elem="*" data-css-postfix="px" min="0" max="10" step="0.1" value="0.2" data-thumbwidth="0.2">
+				    <output name="rangeVal">0.2</output>
+			  	</div>
+
+			  	<label class="rm-label rm-m-t-25 rm-m-b-12">Width</label>
+				<div class="rm-range-control">
+				    <input type="range" name="width" data-elem="#rm-article" data-css="true" data-css-postfix="px" min="100" max="1280" step="10" value="680" data-thumbwidth="100">
+			  	</div>	
+
+			  	<div class="rm-m-t-25 rm-m-b-10">
+		        	<button class="rm-btn rm-btn-primary rm-btn-save rm-btn-xs" data-rm-action="save" data-rm-loading="Saving" data-rm-alert="Saved!">Save</button>
+		    	</div>
+		    </div>
+	  	</div>
+	  	<div class="rm-card">
+		    <div class="rm-card-header rm-hover-brightness" data-target="#rm-themes-settings">
+		        <i class="fas fa-swatchbook rm-m-r-5"></i> THEMES
+		    </div>
+			<div id="rm-themes-settings" class="rm-card-body rm-p-b-7i" data-parent="#rm-main-settings">
+			  	<label class="rm-label rm-m-t-10">Current Theme <button class="rm-btn rm-btn-light btn-delete rm-btn-xxs rm-m-t--1 rm-m-l-3" style="display:none;">Delete</button></label>
+			  	<!--<input type="text" name="themes" class="form-control"/>-->
+			  	<div class="rm-ul rm-list-unstyled rm-list-inline rm-m-b-15">
+			  		<div name="theme" data-value="custom" class="rm-li rm-list-inline-item tooltip-s" title="Add custom theme" data-toggle="true" data-target="#rm-new-theme"></div>
+			  	</div>
+
+			  	<div id="test">
+			  	</div>	
+
+			  	
+
+			  	<p>
+		        	<small>
+		        		To change the extension and app theme, go to the
+		        		<a href="#/" data-rm-action="open-page" data-page-name="options" class="rm-color-primary-i">
+		        			<b>Settings page <i class="fas fa-external-link-square-alt"></i></b>
+		        		</a> 
+		        	</small>
+		        </p> 						
+			</div>
+	  	</div>
+	 	<div class="rm-card">
+		    <div class="rm-card-header rm-hover-brightness" data-target="#rm-display-settings">
+		        <i class="fas fa-toggle-on rm-m-r-5"></i> DISPLAY
+		    </div>
+			<div id="rm-display-settings" class="rm-card-body" data-parent="#rm-main-settings">
+				<label class="rm-label rm-label-isolate">
+					<input type="checkbox" class="rm-m-r-3" name="rm_article_outline" data-toggle="true" data-elem-prefix="#"> 
+					<span>Outline</span>
+				</label>
+				<label class="rm-label rm-label-isolate">
+					<input type="checkbox" class="rm-m-r-3" name="img" data-toggle="true" checked=""> 
+					<span>Images</span>
+				</label>
+				<label class="rm-label rm-label-isolate">
+					<input type="checkbox" class="rm-m-r-3" name="rm_article_meta" data-toggle="true" data-elem-prefix="#" checked=""> 
+					<span>Meta</span> 
+				</label>
+				<label class="rm-label rm-label-isolate">
+					<input type="checkbox" class="rm-m-r-3" name="rm_article_author" data-toggle="true" data-elem-prefix="#" checked=""> 
+					<span>Author</span> 
+				</label>
+				<label class="rm-label rm-label-isolate">
+					<input type="checkbox" class="rm-m-r-3" name="rm_article_reading_time" data-toggle="true" data-elem-prefix="#" checked=""> 
+					<span>Reading Time</span> 
+				</label>
+				<label class="rm-label rm-label-isolate">
+					<input type="checkbox" class="rm-m-r-3" name="rm_article_source" data-toggle="true" data-elem-prefix="#" checked=""> 
+					<span>Source URL</span> 
+				</label>
+
+				<div class="rm-m-t-10 rm-m-b-10 rm-m-l-6">
+		        	<div class="rm-btn rm-btn-primary rm-btn-save rm-btn-xs" data-rm-action="save" data-rm-loading="Saving" data-rm-alert="Saved!">Save</div>
+		    	</div>
+			</div>
+	  	</div>
+		<div class="rm-card">
+		    <div class="rm-card-header rm-hover-brightness" data-target="#rm-dyslexia-ruler-settings">
+		    	<i class="fas fa-ruler-horizontal rm-m-r-5"></i> READING RULER
+		    </div>
+		    <div id="rm-dyslexia-ruler-settings" class="rm-card-body" data-parent="#rm-main-settings">
+		        <label class="rm-label rm-label-isolate">
+	      			<input type="checkbox" class="rm-m-r-3" name="rm_reading_ruler" data-toggle="true" data-elem-prefix="#"> 
+	      			<span>Display Ruler</span>
+	      		</label>
+
+	      		<table class="rm-m-t-10">
+			  		<tbody><tr>
+			  			<td class="rm-p-r-10">Color</td>
+			  			<td>
+			  				<input type="color" name="reading_ruler_bg_color" data-css="true" data-css-attr="background-color" data-elem="#rm-reading-ruler" value="#ADADAD">
+			  			</td>
+			  		</tr>	
+			  	</tbody></table>
+
+			  	<label class="rm-label rm-m-t-20">Opacity</label>
+				<div class="rm-range-control rm-m-b-10">
+				    <input type="range" name="reading_ruler_opacity" data-elem="#rm-reading-ruler" data-css="true" data-css-attr="opacity" min="0.1" max="1" step="0.1" value="0.5" data-thumbwidth="0.5">
+				    <output name="rangeVal">0.5</output>
+			  	</div>
+
+				<label class="rm-label rm-m-t-15">Height</label>
+				<div class="rm-range-control">
+				    <input type="range" name="reading_ruler_height" data-elem="#rm-reading-ruler" data-css="true" data-css-attr="height" data-css-postfix="px" min="10" max="250" step="2" value="40" data-thumbwidth="40">
+				    <output name="rangeVal">40</output>
+			  	</div>
+
+			  	<label class="rm-label rm-m-t-20">Position</label>
+				<div class="rm-range-control rm-m-b-10">
+				    <input type="range" name="reading_ruler_top" data-elem="#rm-reading-ruler" data-css="true" data-css-attr="top" data-css-postfix="%" min="10" max="90" step="5" value="45" data-thumbwidth="45">
+				    <output name="rangeVal">45</output>
+			  	</div>
+
+			  	<div class="rm-m-t-25 rm-m-b-10">
+		        	<div class="rm-btn rm-btn-primary rm-btn-save rm-btn-xs" data-rm-action="save" data-rm-loading="Saving" data-rm-alert="Saved!">Save</div>
+		    	</div>
+		    </div>
+		</div>
+	  	<div class="rm-card">
+		    <div class="rm-card-header rm-hover-brightness" data-target="#rm-auto-run-rules">
+		    	<span class="rm-m-r-5"><i class="fas fa-globe rm-m-r-1"></i></span> AUTO-RUN RULES 
+		    	<span class="rm-pill rm-pill-premium rm-m-l-5" data-rm-action="upgrade"><small>PREMIUM</small></span>
+		    </div>
+		    <div id="rm-auto-run-rules" class="rm-card-body" data-parent="#rm-main-settings">
+		        <textarea name="auto_run_rules" class="rm-form-control rm-textarea rm-m-b-10i" rows="5" spellcheck="false" placeholder="Add regex expressions here (seperated by commas)" readonly=""></textarea>
+
+		        <p>
+		        	<small>
+		        		Automatically activate Reader Mode on specific websites by using regex. 
+		        		<a href="https://readermode.io/features/auto-run" target="_blank" class="rm-color-primary-i">
+		        			<b>Learn more <i class="fas fa-external-link-square-alt"></i></b>
+		        		</a> 
+		        	</small>
+		        </p> 
+
+		        <div class="rm-m-t-10 rm-m-b-10">
+		        	<div class="rm-btn rm-btn-primary rm-btn-save rm-btn-xs" data-rm-action="save" data-rm-loading="Saving">Save</div>
+		    	</div>
+		    </div>
+	  	</div>		
+	  	<div class="rm-card">
+		    <div class="rm-card-header rm-hover-brightness" data-target="#rm-custom-css-settings">
+		    	<span class="rm-m-r-5">{ }</span> CUSTOM CSS 
+		    	<span class="rm-pill rm-pill-premium rm-m-l-5" data-rm-action="upgrade"><small>PREMIUM</small></span>
+		    </div>
+		    <div id="rm-custom-css-settings" class="rm-card-body" data-parent="#rm-main-settings">
+		        <textarea name="custom_css" class="rm-form-control rm-textarea rm-m-b-10i" rows="5" spellcheck="false" placeholder="Add your custom css..." readonly=""></textarea>
+		        <div>
+		        	<input type="checkbox" class="rm-m-r-3" name="use_custom_css" checked="" disabled=""> Use custom css
+		    	</div>
+
+		        <p>
+		        	<small>
+		        		Add your own CSS to customize the article's layout or design
+		        		<a href="https://help.readermode.io/using-reader-mode/custom-css" target="_blank" class="rm-color-primary-i">
+		        			<b>Learn more <i class="fas fa-external-link-square-alt"></i></b>
+		        		</a> 
+		        	</small>
+		        </p> 
+
+		        <div class="rm-m-t-10 rm-m-b-10">
+		        	<div class="rm-btn rm-btn-primary rm-btn-save rm-btn-xs" data-rm-action="save" data-rm-loading="Saving">Save</div>
+		    	</div>
+		    </div>
+	  	</div>
+	</div>
+</div>
+
+<div id="rm-translate" class="rm-toolbar-aside" data-toggle-target="true" data-parent="#rm-translate-toggle" style="display:none">
+	<div class="rm-card">
+	    <div class="rm-card-header">
+	    	<i class="fas fa-language rm-m-r-5"></i> TRANSLATE
+	    </div>
+	    <div class="rm-card-body">
+			<label class="rm-label rm-display-block rm-m-b-10">Default translation language:</label>
+			<select class="custom-select rm-custom-select rm-border-0i" name="default_translation_language">
+				<option value="af">🇿🇦 Afrikaans</option>
+				<option value="sq">🇦🇱 Albanian</option>
+				<option value="ar">🇸🇦 Arabic</option>
+				<option value="az">🇦🇿 Azerbaijani</option>
+				<option value="eu">🏴󠁥󠁳󠁰󠁶󠁿 Basque</option>
+				<option value="bn">🇧🇩 Bengali</option>
+				<option value="be">🇧🇾 Belarusian</option>
+				<option value="bg">🇧🇬 Bulgarian</option>
+				<option value="ca">🏴󠁥󠁳󠁰󠁶󠁿 Catalan</option>
+				<option value="zh-CN">🇨🇳 Chinese Simplified</option>
+				<option value="zh-TW">🇨🇳 Chinese Traditional</option>
+				<option value="hr">🇭🇷 Croatian</option>
+				<option value="cs">🇨🇿 Czech</option>
+				<option value="da">🇩🇰 Danish</option>
+				<option value="nl">🇳🇱 Dutch</option>
+				<option value="en" selected="">🇬🇧 English</option>
+				<option value="eo">🏴󠁥󠁳󠁰󠁶󠁿 Esperanto</option>
+				<option value="et">🇪🇪 Estonian</option>
+				<option value="tl">🇵🇭 Filipino</option>
+				<option value="fi">🇫🇮 Finnish</option>
+				<option value="fr">🇫🇷 French</option>
+				<option value="gl">🇪🇸 Galician</option>
+				<option value="ka">🇬🇪 Georgian</option>
+				<option value="de">🇩🇪 German</option>
+				<option value="el">🇬🇷 Greek</option>
+				<option value="gu">🇮🇳 Gujarati</option>
+				<option value="ht">🇭🇹 Haitian Creole</option>
+				<option value="iw">🇮🇱 Hebrew</option>
+				<option value="hi">🇮🇳 Hindi</option>
+				<option value="hu">🇭🇺 Hungarian</option>
+				<option value="is">🇮🇸 Icelandic</option>
+				<option value="id">🇮🇩 Indonesian</option>
+				<option value="ga">🇮🇪 Irish</option>
+				<option value="it">🇮🇹 Italian</option>
+				<option value="ja">🇯🇵 Japanese</option>
+				<option value="kn">🇮🇳 Kannada</option>
+				<option value="ko">🇰🇷 Korean</option>
+				<option value="la">🏴󠁥󠁳󠁰󠁶󠁿 Latin</option>
+				<option value="lv">🇱🇻 Latvian</option>
+				<option value="lt">🇱🇹 Lithuanian</option>
+				<option value="mk">🇲🇰 Macedonian</option>
+				<option value="ms">🇲🇾 Malay</option>
+				<option value="mt">🇲🇹 Maltese</option>
+				<option value="no">🇳🇴 Norwegian</option>
+				<option value="fa">🇮🇷 Persian</option>
+				<option value="pl">🇵🇱 Polish</option>
+				<option value="pt">🇵🇹 Portuguese</option>
+				<option value="ro">🇷🇴 Romanian</option>
+				<option value="ru">🇷🇺 Russian</option>
+				<option value="sr">🇷🇸 Serbian</option>
+				<option value="sk">🇸🇰 Slovak</option>
+				<option value="sl">🇸🇮 Slovenian</option>
+				<option value="es">🇪🇸 Spanish</option>
+				<option value="sw">🏴󠁥󠁳󠁰󠁶󠁿 Swahili</option>
+				<option value="sv">🇸🇪 Swedish</option>
+				<option value="ta">🇮🇳 Tamil</option>
+				<option value="te">🇮🇳 Telugu</option>
+				<option value="th">🇹🇭 Thai</option>
+				<option value="tr">🇹🇷 Turkish</option>
+				<option value="uk">🇺🇦 Ukrainian</option>
+				<option value="ur">🇵🇰 Urdu</option>
+				<option value="vi">🇻🇳 Vietnamese</option>
+				<option value="cy">🇬🇧 Welsh</option>
+				<option value="yi">🇮🇱 Yiddish</option>
+			</select>	
+
+			<div class="rm-m-t-10 rm-m-b-10">
+				<div class="rm-btn rm-btn-light rm-btn-save rm-btn-xs rm-m-r-5 rm-p-l-10i rm-p-r-10i" data-rm-loading="Setting" data-rm-alert="Set!">Set</div>
+				<div class="rm-btn rm-btn-primary rm-btn-save rm-btn-xs" data-rm-action="translate">Translate</div>
+			</div>
+	    </div>
+	</div>	
+</div>
+
+<div id="rm-deletion-mode" class="rm-toolbar-aside" style="display:none">
+	<div class="rm-card">
+	    <div class="rm-card-body text-center rm-p-0i rm-p-t-5i rm-p-b-5i">
+	   		<center>
+	   			<a href="#/" class="rm-deletion-mode-undo rm-m-r-10" title="Undo" style="display:none">
+	        		<i class="fas fa-undo"></i> 
+	        	</a>
+
+		        <div class="rm-btn rm-btn-xs rm-btn-light rm-p-l-25i rm-p-r-25i rm-m-r-3">Cancel</div>
+		        <div class="rm-btn rm-btn-xs rm-btn-primary rm-p-l-30i rm-p-r-30i">Save</div>
+	    	</center>
+	    </div>
+	</div>	
+</div>
+
+<div id="rm-editing-mode" class="rm-toolbar-aside" style="display:none">
+	<div class="rm-card">
+	    <div class="rm-card-body text-center rm-p-0i rm-p-t-5i rm-p-b-5i">
+	    	<center>
+		        <div class="rm-btn rm-btn-xs rm-btn-light rm-p-l-25i rm-p-r-25i rm-m-r-3">Cancel</div>
+		        <div class="rm-btn rm-btn-xs rm-btn-primary rm-p-l-30i rm-p-r-30i">Save</div>
+	    	</center>
+	    </div>
+	</div>	
+</div>
+
+<div id="rm-reading-ruler" class="no-print" style="display:none">
+</div>
+
+<div id="rm-article-outline" class="rm-toolbar-aside" style="display:none">
+	<div class="rm-card">
+	    <div class="rm-card-header">
+	    	<i class="fas fa-list-ul rm-m-r-5"></i> OUTLINE
+	    	<i class="fas fa-chevron-up rm-card-body-toggle rm-float-right rm-m-t-1"></i>
+	    </div>
+	    <div class="rm-card-body">
+	        <div class="rm-ul rm-list-unstyled rm-m-b-5">
+	        </div>	
+	    </div>
+	</div>	
+</div>
+<script>
+    let jsonData = null;
+
+    document.getElementById('fileInput').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          jsonData = JSON.parse(e.target.result);
+          document.getElementById('status').textContent = "✅ JSON Loaded";
+        } catch (err) {
+          document.getElementById('status').textContent = "❌ Invalid JSON";
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function processFile() {
+      const type = document.getElementById('jsonType').value;
+      if (!jsonData) { alert("Upload JSON first!"); return; }
+
+      let rows = [];
+
+      try {
+        if (type === "alf") {
+          jsonData.data.ujianPelajaran.forEach(subj => {
+            subj.dataSoal.forEach(q => {
+              rows.push({
+                Subject: subj.namaPelajaran,
+                Bab: q.bab || "",
+                SoalID: q.soalID || "",
+                Question: clean(q.pertanyaan),
+                Choice1: clean(q.pilihan1), Choice2: clean(q.pilihan2),
+                Choice3: clean(q.pilihan3), Choice4: clean(q.pilihan4),
+                Choice5: clean(q.pilihan5),
+                Correct: q.jawabanBenar,
+                Explanation: clean(q.pembahasan)
+              });
+            });
+          });
+        } else if (type === "vc") {
+          jsonData.data.soalId.forEach(item => {
+            item.jawaban.forEach(ans => {
+              rows.push({
+                SoalID: item.id,
+                Question: clean(item.soal),
+                Answer: clean(ans.jawaban),
+                Correct: ans.isCorrect,
+                Point: ans.point,
+                Explanation: clean(item.pembahasan),
+                Category: item.category,
+                SubCategory: item.subCategory,
+                Status: item.status
+              });
+            });
+          });
+        } else if (type === "idcpns") {
+          jsonData.data.forEach(item => {
+            item.options.forEach(opt => {
+              rows.push({
+                Question: item.soal,
+                Explanation: item.pembahasan,
+                Subcategory: item.sub_category?.subkategori || "",
+                Initial: opt.inisial,
+                Answer: opt.jawaban,
+                Score: opt.nilai
+              });
+            });
+          });
+        }
+      } catch (err) {
+        document.getElementById('status').textContent = "❌ Error parsing: " + err.message;
+        return;
+      }
+
+      // Preview
+      document.getElementById('preview').textContent = JSON.stringify(rows.slice(0,5), null, 2);
+
+      // Export
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Questions");
+      XLSX.writeFile(wb, `output_${type}.xlsx`);
+
+      document.getElementById('status').textContent = `✅ Converted ${rows.length} rows`;
+    }
+
+    function clean(html) {
+      if (!html) return "";
+      const div = document.createElement("div");
+      div.innerHTML = html;
+      return div.textContent.trim();
+    }
+  </script>
+</body></html>
