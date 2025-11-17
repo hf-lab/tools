@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Exam Card Generator</title>
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { color-scheme: light dark; }
+    .card-preview { width: 342px; height: 216px; /* 85.6x54 mm scaled ~4x at 96dpi */ }
+    .visually-hidden { position: absolute !important; clip: rect(1px, 1px, 1px, 1px); padding:0; border:0; height:1px; width:1px; overflow:hidden; }
+  </style>
+  <!-- Libraries (no integrity to avoid SRI mismatch issues) -->
+  <!-- use version 0.20.3 -->
+<script type="text/javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body class="min-h-full bg-zinc-50 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
+  <header class="border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/60 backdrop-blur">
+    <div class="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
+      <h1 class="text-2xl font-bold tracking-tight">Exam Card Generator</h1>
+      <a id="downloadTemplate" class="text-sm underline hover:no-underline" href="#">Unduh Template Excel</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left controls -->
+    <section class="lg:col-span-2 space-y-6">
+      <div class="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-sm">
+        <h2 class="text-lg font-semibold mb-3">1) Data Siswa</h2>
+        <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-3">Unggah file <strong>Excel (.xlsx)</strong> atau <strong>CSV</strong> dengan header: <code>Nama</code>, <code>Username</code>, <code>Password</code>, <code>Kelas</code>, <code>Asal SSC</code>, <code>Sesi Ujian</code>, <code>Link ujian</code>. Satu baris = satu siswa.</p>
+        <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+          <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" class="block w-full sm:w-auto text-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-zinc-900 file:text-white hover:file:bg-zinc-800 dark:file:bg-white dark:file:text-zinc-900 dark:hover:file:bg-zinc-200" />
+          <div class="text-sm" id="fileMeta">Tidak ada file.</div>
+        </div>
+        <div id="mappingNote" class="mt-3 text-xs text-amber-600 hidden">Catatan: Beberapa kolom akan otomatis dipetakan jika nama header berbeda tipis (mis. "Link Ujian" vs "Link ujian").</div>
+      </div>
+
+      <div class="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-sm">
+        <h2 class="text-lg font-semibold mb-3">2) Identitas Kartu</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm">Judul Ujian</span>
+            <input id="judulUjian" type="text" placeholder="Contoh: Tryout SKD 2025 Gelombang 1" class="mt-1 w-full rounded-xl border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2" />
+          </label>
+          <label class="block">
+            <span class="text-sm">Logo (PNG/JPG)</span>
+            <input id="logoInput" type="file" accept="image/*" class="mt-1 block w-full text-sm" />
+          </label>
+          <label class="block">
+            <span class="text-sm">Ukuran Kartu</span>
+            <select id="sizePreset" class="mt-1 w-full rounded-xl border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2">
+              <option value="id1">ID Card — 85.6 × 54 mm</option>
+              <option value="a7">A7 — 105 × 74 mm</option>
+              <option value="a6">A6 — 148 × 105 mm</option>
+              <option value="custom">Kustom (mm)</option>
+            </select>
+          </label>
+          <div class="grid grid-cols-2 gap-3" id="customSizeBox" style="display:none">
+            <label class="block">
+              <span class="text-sm">Lebar (mm)</span>
+              <input id="wMM" type="number" step="0.1" class="mt-1 w-full rounded-xl border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2" />
+            </label>
+            <label class="block">
+              <span class="text-sm">Tinggi (mm)</span>
+              <input id="hMM" type="number" step="0.1" class="mt-1 w-full rounded-xl border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2" />
+            </label>
+          </div>
+          <label class="block">
+            <span class="text-sm">Margin (mm)</span>
+            <input id="marginMM" type="number" step="0.1" value="4" class="mt-1 w-full rounded-xl border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2" />
+          </label>
+          <label class="block">
+            <span class="text-sm">QR Code Size (mm)</span>
+            <input id="qrMM" type="number" step="1" value="22" class="mt-1 w-full rounded-xl border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2" />
+          </label>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-sm">
+        <h2 class="text-lg font-semibold mb-3">3) Generate</h2>
+        <div class="flex flex-wrap gap-3">
+          <button id="previewBtn" class="px-4 py-2 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900">Preview 1 Kartu</button>
+          <button id="zipAllBtn" class="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700">Generate Semua (ZIP)</button>
+        </div>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-2">Teks pada PDF <em>dapat diseleksi</em> (bukan gambar). Setiap siswa menjadi <strong>1 PDF</strong> dengan nama file berdasarkan kolom <code>Nama</code>.</p>
+      </div>
+    </section>
+
+    <!-- Right preview -->
+    <aside class="lg:col-span-1">
+      <div class="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-sm">
+        <h2 class="text-lg font-semibold mb-3">Preview</h2>
+        <iframe id="pdfPreview" title="Preview PDF" class="w-full h-80 rounded-xl border border-zinc-200 dark:border-zinc-800"></iframe>
+        <div class="mt-3 text-xs text-zinc-600 dark:text-zinc-400" id="status">Siap.</div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="mx-auto max-w-5xl px-4 pb-10 text-xs text-zinc-500">
+    Dibuat untuk kebutuhan pembuatan kartu ujian profesional. Pastikan font default tersedia (Helvetica). Logo akan diraster, teks tetap vektor.
+  </footer>
+
+  <script>
+    const $ = (q) => document.querySelector(q);
+    const fileInput = $('#fileInput');
+    const fileMeta = $('#fileMeta');
+    const mappingNote = $('#mappingNote');
+    const judulUjian = $('#judulUjian');
+    const logoInput = $('#logoInput');
+    const sizePreset = $('#sizePreset');
+    const customSizeBox = $('#customSizeBox');
+    const wMM = $('#wMM');
+    const hMM = $('#hMM');
+    const marginMM = $('#marginMM');
+    const qrMM = $('#qrMM');
+    const previewBtn = $('#previewBtn');
+    const zipAllBtn = $('#zipAllBtn');
+    const pdfPreview = $('#pdfPreview');
+    const statusEl = $('#status');
+    const downloadTemplate = $('#downloadTemplate');
+
+    let rows = []; // parsed data
+    let logoDataURL = null;
+
+    const REQUIRED = ['Nama','Username','Password','Kelas','Asal SSC','Sesi Ujian','Link ujian'];
+    const ALIASES = {
+      'link ujian': 'Link ujian',
+      'link': 'Link ujian',
+      'asal ssc': 'Asal SSC',
+      'asal_ssc': 'Asal SSC',
+      'sesi': 'Sesi Ujian',
+      'kelas': 'Kelas'
+    };
+
+    function mmToPt(mm){ return mm * 72 / 25.4; }
+
+    sizePreset.addEventListener('change', () => {
+      customSizeBox.style.display = sizePreset.value === 'custom' ? '' : 'none';
+    });
+
+    logoInput.addEventListener('change', async (e) => {
+      const f = e.target.files?.[0];
+      if(!f) { logoDataURL = null; return; }
+      const buf = await f.arrayBuffer();
+      const blob = new Blob([buf], {type: f.type});
+      logoDataURL = await blobToDataURL(blob);
+    });
+
+    fileInput.addEventListener('change', async (e) => {
+      const f = e.target.files?.[0];
+      if(!f){ rows = []; fileMeta.textContent = 'Tidak ada file.'; return; }
+      const isCSV = f.name.toLowerCase().endsWith('.csv');
+      const data = new Uint8Array(await f.arrayBuffer());
+      const wb = isCSV ? XLSX.read(await f.text(), {type:'string'}) : XLSX.read(data, {type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      let json = XLSX.utils.sheet_to_json(ws, {defval:''});
+
+      // normalize headers (aliases)
+      json = json.map(row => {
+        const out = {};
+        for (const [k,v] of Object.entries(row)){
+          const keyNorm = (k||'').toString().trim();
+          const low = keyNorm.toLowerCase();
+          const mapped = ALIASES[low] || keyNorm;
+          out[mapped] = v;
+        }
+        return out;
+      });
+
+      // check coverage
+      const missing = REQUIRED.filter(col => !Object.keys(json[0]||{}).includes(col));
+      mappingNote.classList.toggle('hidden', missing.length === 0);
+      rows = json;
+      fileMeta.textContent = `${f.name} — ${rows.length} baris`;
+    });
+
+    previewBtn.addEventListener('click', async () => {
+      if(rows.length === 0){ return alert('Unggah data siswa terlebih dahulu.'); }
+      const first = rows[0];
+      const { pdf, wmm, hmm } = await buildCardPDF(first);
+      const datauri = pdf.output('datauristring');
+      pdfPreview.src = datauri;
+      status(`Preview untuk: ${first.Nama || 'Tanpa Nama'}`);
+    });
+
+    zipAllBtn.addEventListener('click', async () => {
+      if(rows.length === 0){ return alert('Unggah data siswa terlebih dahulu.'); }
+      const zip = new JSZip();
+      let ok = 0, fail = 0;
+      for (const r of rows){
+        try {
+          const { pdf } = await buildCardPDF(r);
+          const blob = pdf.output('blob');
+          const fname = safeFilename(`${r.Nama || 'Siswa'}.pdf`);
+          zip.file(fname, blob);
+          ok++;
+        } catch(err){
+          console.error(err); fail++;
+        }
+      }
+      const out = await zip.generateAsync({type:'blob'});
+      saveAs(out, `kartu-ujian-${new Date().toISOString().slice(0,10)}.zip`);
+      status(`Selesai: ${ok} sukses, ${fail} gagal.`);
+    });
+
+    function status(msg){ statusEl.textContent = msg; }
+
+    function chooseSizeMM(){
+      switch(sizePreset.value){
+        case 'id1': return {w:85.6, h:54};
+        case 'a7': return {w:105, h:74};
+        case 'a6': return {w:148, h:105};
+        case 'custom': return {w:parseFloat(wMM.value)||85.6, h:parseFloat(hMM.value)||54};
+        default: return {w:85.6, h:54};
+      }
+    }
+
+    async function buildCardPDF(row){
+      const { jsPDF } = window.jspdf;
+      const size = chooseSizeMM();
+      const wmm = size.w, hmm = size.h;
+      const pdf = new jsPDF({
+        orientation: wmm >= hmm ? 'landscape' : 'portrait',
+        unit: 'mm',
+        format: [wmm, hmm]
+      });
+
+      const m = Math.max(0, parseFloat(marginMM.value)||0);
+      const innerW = wmm - 2*m;
+      const innerH = hmm - 2*m;
+
+      // Card frame
+      pdf.setDrawColor(200);
+      pdf.setLineWidth(0.3);
+      pdf.roundedRect(m, m, innerW, innerH, 3, 3, 'S');
+
+      // Header
+      pdf.setFont('helvetica','bold');
+      pdf.setFontSize(12);
+      const title = (judulUjian.value||'Judul Ujian').toString();
+      centerText(pdf, title, wmm/2, m+6);
+
+      // Logo (optional)
+      if(logoDataURL){
+        try {
+          const logoHeight = 10; // mm
+          const logoWidth = logoHeight *  (await imgAspect(logoDataURL));
+          pdf.addImage(logoDataURL, 'PNG', wmm - m - logoWidth, m + 2, logoWidth, logoHeight, undefined, 'FAST');
+        } catch(e){ console.warn('Logo gagal dimuat', e); }
+      }
+
+      // Content grid
+      const startY = m + 12;
+      let y = startY;
+      const lh = 6; // line height mm
+
+      pdf.setFont('helvetica','normal');
+      pdf.setFontSize(9.5);
+
+      textRow(pdf, m+3, y, `Nama`, row.Nama); y+=lh;
+      textRow(pdf, m+3, y, `Username`, row.Username); y+=lh;
+      textRow(pdf, m+3, y, `Password`, row.Password); y+=lh;
+      textRow(pdf, m+3, y, `Kelas`, row.Kelas); y+=lh;
+      textRow(pdf, m+3, y, `Asal SSC`, row['Asal SSC']); y+=lh;
+      textRow(pdf, m+3, y, `Sesi Ujian`, row['Sesi Ujian']);
+
+      // QR Code for Link ujian
+      const link = (row['Link ujian']||'').toString().trim();
+      if(link){
+        const qSize = Math.max(12, parseFloat(qrMM.value)||22);
+        const qX = wmm - m - qSize - 3;
+        const qY = hmm - m - qSize - 3;
+        const qrDataURL = await makeQRDataURL(link, qSize*4);
+        pdf.addImage(qrDataURL, 'PNG', qX, qY, qSize, qSize, undefined, 'FAST');
+        pdf.setFontSize(7.5);
+        pdf.text('Scan untuk ujian', qX + qSize/2, qY - 1.5, {align:'center'});
+      }
+
+      // Footer note (link text small, selectable)
+      if(link){
+        pdf.setFontSize(7);
+        pdf.setTextColor(80);
+        pdf.textWithLink(link, m+3, hmm - m - 2, { url: link });
+      }
+
+      return { pdf, wmm, hmm };
+    }
+
+    function textRow(pdf, x, y, label, value){
+      const rightX = x + 28;
+      pdf.setFont('helvetica','bold');
+      pdf.setTextColor(0);
+      pdf.text(`${label}`, x, y);
+      pdf.setFont('helvetica','normal');
+      pdf.setTextColor(20);
+      const v = (value==null? '—' : String(value));
+      pdf.text(v, rightX, y);
+    }
+
+    function centerText(pdf, txt, x, y){
+      const w = pdf.getTextWidth(txt);
+      pdf.text(txt, x - w/2, y);
+    }
+
+    function safeFilename(name){
+      return (name||'file').replace(/[\\/:*?"<>|\n\r]+/g,'_').trim() || 'file';
+    }
+
+    function blobToDataURL(blob){
+      return new Promise((res, rej)=>{
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.onerror = rej;
+        r.readAsDataURL(blob);
+      });
+    }
+
+    function imgAspect(dataURL){
+      return new Promise((res, rej)=>{
+        const img = new Image();
+        img.onload = ()=> res(img.width / img.height || 1);
+        img.onerror = rej;
+        img.src = dataURL;
+      });
+    }
+
+    function makeQRDataURL(text, sizePx){
+      return new Promise((resolve) => {
+        const div = document.createElement('div');
+        div.className = 'visually-hidden';
+        document.body.appendChild(div);
+        const qr = new QRCode(div, { text, width: sizePx, height: sizePx, correctLevel: QRCode.CorrectLevel.M });
+        setTimeout(() => {
+          const img = div.querySelector('img');
+          const canvas = div.querySelector('canvas');
+          let url = null;
+          if (canvas) url = canvas.toDataURL('image/png');
+          else if (img) url = img.src;
+          document.body.removeChild(div);
+          resolve(url);
+        }, 20);
+      });
+    }
+
+    // Generate sample template (XLSX) dynamically
+    downloadTemplate.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const ws = XLSX.utils.aoa_to_sheet([
+        REQUIRED,
+        ['Budi Santoso','budi001','pass123','12 IPA 1','SSC Pandan','Sesi 1','https://ujian.example.com/tryout?id=abc123'],
+        ['Siti Aminah','siti002','rahasia','12 IPS 2','SSC Depok','Sesi 2','https://ujian.example.com/tryout?id=xyz789']
+      ]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Data');
+      const out = XLSX.write(wb, {bookType:'xlsx', type:'array'});
+      const blob = new Blob([out], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      saveAs(blob, 'template-kartu-ujian.xlsx');
+    });
+  </script>
+</body>
+</html>
