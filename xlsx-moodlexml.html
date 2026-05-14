@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excel → Moodle XML Converter</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:           #f5f6f8;
+      --white:        #ffffff;
+      --surface-2:    #f0f2f5;
+      --border:       #e3e6ec;
+      --border-hover: #c5cad6;
+      --accent:       #2563eb;
+      --accent-lt:    #eff4ff;
+      --accent-mid:   #bfcffe;
+      --success:      #16a34a;
+      --success-lt:   #f0fdf4;
+      --success-mid:  #bbf7d0;
+      --error:        #dc2626;
+      --error-lt:     #fef2f2;
+      --error-mid:    #fecaca;
+      --warn:         #d97706;
+      --warn-lt:      #fffbeb;
+      --text:         #0f172a;
+      --text-2:       #334155;
+      --text-muted:   #64748b;
+      --text-faint:   #94a3b8;
+      --answer-a:     #2563eb;
+      --answer-b:     #7c3aed;
+      --answer-c:     #0891b2;
+      --answer-d:     #059669;
+      --answer-e:     #d97706;
+      --radius-sm:    8px;
+      --radius:       12px;
+      --radius-lg:    16px;
+      --shadow-sm:    0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow:       0 4px 12px rgba(0,0,0,.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--text);
+      padding: 40px 20px 80px;
+    }
+
+    .page { width: 100%; max-width: 740px; margin: 0 auto; }
+
+    /* ── Topbar ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+
+    .brand-icon {
+      width: 40px; height: 40px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 2px 8px rgba(37,99,235,.28);
+    }
+
+    .brand-text h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.03em; }
+    .brand-text p  { font-size: 0.74rem; color: var(--text-muted); margin-top: 1px; }
+
+    .badge {
+      font-size: 0.7rem; font-weight: 600;
+      background: var(--accent-lt);
+      color: var(--accent);
+      border: 1px solid var(--accent-mid);
+      padding: 3px 10px; border-radius: 20px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px;
+    }
+
+    .card-head-left { display: flex; align-items: center; gap: 10px; }
+
+    .section-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .si-blue   { background: var(--accent-lt); }
+    .si-green  { background: var(--success-lt); }
+    .si-amber  { background: var(--warn-lt); }
+    .si-purple { background: #f3f0ff; }
+
+    .card-head h2 { font-size: 0.88rem; font-weight: 600; letter-spacing: -0.01em; }
+    .card-head p  { font-size: 0.74rem; color: var(--text-muted); }
+
+    .card-body { padding: 22px; }
+
+    /* ── Upload ── */
+    .upload-zone {
+      border: 2px dashed var(--border-hover);
+      border-radius: var(--radius);
+      padding: 36px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--surface-2);
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--accent); background: var(--accent-lt);
+    }
+    .upload-zone.has-file {
+      border-style: solid; border-color: var(--success); background: var(--success-lt);
+    }
+
+    .upload-icon-ring {
+      width: 52px; height: 52px; border-radius: 50%;
+      border: 2px solid var(--border); background: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px; font-size: 22px; transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+    .upload-zone:hover .upload-icon-ring, .upload-zone.dragover .upload-icon-ring {
+      border-color: var(--accent); background: var(--accent-lt);
+    }
+    .upload-zone.has-file .upload-icon-ring {
+      border-color: var(--success); background: var(--success-lt);
+    }
+
+    .upload-title { font-size: 0.92rem; font-weight: 600; margin-bottom: 4px; }
+    .upload-sub   { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px; }
+
+    .file-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--success-lt); border: 1px solid var(--success-mid);
+      color: var(--success); padding: 4px 12px; border-radius: 20px;
+      font-size: 0.78rem; font-family: 'Geist Mono', monospace; font-weight: 500;
+    }
+
+    #fileInput { display: none; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: var(--radius-sm);
+      font-size: 0.82rem; font-weight: 500;
+      font-family: inherit; cursor: pointer;
+      transition: all 0.15s; border: 1px solid transparent;
+    }
+    .btn-outline {
+      background: var(--white); color: var(--text-2); border-color: var(--border);
+    }
+    .btn-outline:hover { border-color: var(--border-hover); background: var(--surface-2); }
+    .btn-outline:disabled { opacity: .4; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--accent); color: #fff;
+      box-shadow: 0 1px 3px rgba(37,99,235,.28);
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-primary:disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+    .btn-full { width: 100%; justify-content: center; padding: 13px; font-size: 0.95rem; font-weight: 600; border-radius: var(--radius-sm); }
+
+    /* ── Fields ── */
+    .field + .field { margin-top: 16px; }
+    .field-label {
+      display: block; font-size: 0.78rem; font-weight: 600;
+      color: var(--text-2); margin-bottom: 7px;
+    }
+    .field-input {
+      width: 100%; padding: 10px 13px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      font-size: 0.88rem; font-family: inherit; color: var(--text);
+      background: var(--white); transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field-input:focus {
+      outline: none; border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+    .field-input::placeholder { color: var(--text-faint); }
+
+    /* ── Toggle ── */
+    .toggle-wrap {
+      display: flex; background: var(--surface-2);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 4px; gap: 4px;
+    }
+    .toggle-btn {
+      flex: 1; padding: 9px 12px; border-radius: 6px; border: none;
+      background: transparent; color: var(--text-muted);
+      font-size: 0.85rem; font-weight: 500; font-family: inherit;
+      cursor: pointer; transition: all 0.15s; text-align: center; line-height: 1.3;
+    }
+    .toggle-btn:hover { color: var(--text); }
+    .toggle-btn.active {
+      background: var(--white); color: var(--accent);
+      box-shadow: var(--shadow-sm); font-weight: 600;
+    }
+    .toggle-sub {
+      font-size: 0.7rem; color: var(--text-faint);
+      margin-top: 2px; font-weight: 400;
+    }
+    .toggle-btn.active .toggle-sub { color: var(--accent); opacity: .65; }
+
+    /* ── Cols preview ── */
+    .cols-box {
+      margin-top: 10px; background: var(--surface-2);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 11px 13px;
+    }
+    .cols-box-title {
+      font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;
+    }
+    .cols-list { display: flex; flex-wrap: wrap; gap: 5px; }
+    .col-chip {
+      font-size: 0.68rem; font-family: 'Geist Mono', monospace;
+      padding: 3px 8px; border-radius: 5px;
+      border: 1px solid var(--border); background: var(--white); color: var(--text-muted);
+    }
+    .col-chip.req {
+      background: var(--accent-lt); border-color: var(--accent-mid);
+      color: var(--accent); font-weight: 500;
+    }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    /* ── Status ── */
+    .status { display: none; margin-top: 12px; padding: 12px 15px; border-radius: var(--radius-sm); font-size: 0.84rem; font-weight: 500; line-height: 1.5; }
+    .status.show { display: block; }
+    .status.success { background: var(--success-lt); border: 1px solid var(--success-mid); color: var(--success); }
+    .status.error   { background: var(--error-lt);   border: 1px solid var(--error-mid);   color: var(--error);   }
+
+    .loading-row {
+      display: none; align-items: center; gap: 10px;
+      margin-top: 12px; padding: 11px 14px;
+      background: var(--accent-lt); border: 1px solid var(--accent-mid);
+      border-radius: var(--radius-sm);
+    }
+    .loading-row.show { display: flex; }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid var(--accent-mid); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 0.82rem; color: var(--accent); font-weight: 500; }
+
+    /* ═══════════════════════════════════
+       PREVIEW PANEL
+    ═══════════════════════════════════ */
+    #previewCard { display: none; }
+    #previewCard.show { display: block; }
+
+    /* Stats row */
+    .preview-stats { display: flex; gap: 20px; }
+    .stat { text-align: right; }
+    .stat-val { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; color: var(--accent); }
+    .stat-lbl { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+
+    /* Filter bar */
+    .preview-filter {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .search-input {
+      flex: 1; min-width: 180px; padding: 8px 12px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      font-size: 0.82rem; font-family: inherit; background: var(--white);
+      color: var(--text); transition: border-color 0.15s;
+    }
+    .search-input:focus { outline: none; border-color: var(--accent); }
+    .search-input::placeholder { color: var(--text-faint); }
+
+    .filter-btn {
+      padding: 7px 13px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--white); color: var(--text-muted);
+      font-size: 0.78rem; font-weight: 500; font-family: inherit; cursor: pointer;
+      transition: all 0.15s; white-space: nowrap;
+    }
+    .filter-btn:hover { border-color: var(--border-hover); color: var(--text); }
+    .filter-btn.active { background: var(--accent-lt); border-color: var(--accent-mid); color: var(--accent); }
+
+    /* Nav */
+    .preview-nav {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+    }
+    .nav-info {
+      font-size: 0.8rem; color: var(--text-muted); font-weight: 500;
+      min-width: 64px; text-align: center;
+    }
+
+    /* Question card */
+    .q-card {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; background: var(--white); box-shadow: var(--shadow-sm);
+    }
+
+    .q-head {
+      padding: 13px 18px; background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start;
+      justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+
+    .q-meta { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+
+    .q-num {
+      font-size: 0.7rem; font-weight: 700;
+      background: var(--accent); color: #fff;
+      padding: 2px 9px; border-radius: 20px; letter-spacing: 0.02em;
+    }
+
+    .q-name-tag {
+      font-size: 0.72rem; font-family: 'Geist Mono', monospace;
+      color: var(--text-muted); background: var(--white);
+      border: 1px solid var(--border); padding: 2px 8px; border-radius: 5px;
+    }
+
+    .q-grade-tag {
+      font-size: 0.7rem; font-weight: 600; color: var(--warn);
+      background: var(--warn-lt); border: 1px solid #fde68a;
+      padding: 2px 8px; border-radius: 5px;
+    }
+
+    .status-badge {
+      font-size: 0.68rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 20px;
+    }
+    .badge-valid { background: var(--success-lt); color: var(--success); border: 1px solid var(--success-mid); }
+    .badge-issue { background: var(--error-lt);   color: var(--error);   border: 1px solid var(--error-mid);   }
+
+    .q-body { padding: 18px; }
+
+    .q-text {
+      font-size: 0.92rem; color: var(--text);
+      line-height: 1.65; margin-bottom: 16px; font-weight: 500;
+    }
+
+    .choices-list { display: flex; flex-direction: column; gap: 7px; }
+
+    .choice-row {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 13px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border); background: var(--surface-2);
+      transition: all 0.15s;
+    }
+    .choice-row.correct { border-color: var(--success-mid); background: var(--success-lt); }
+    .choice-row.partial { border-color: #fde68a; background: var(--warn-lt); }
+
+    .choice-letter {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+      margin-top: 1px; color: #fff;
+    }
+    .ltr-a { background: var(--answer-a); }
+    .ltr-b { background: var(--answer-b); }
+    .ltr-c { background: var(--answer-c); }
+    .ltr-d { background: var(--answer-d); }
+    .ltr-e { background: var(--answer-e); }
+    .choice-row.correct .choice-letter { box-shadow: 0 0 0 3px var(--success-mid); }
+
+    .choice-content { flex: 1; min-width: 0; }
+    .choice-text { font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+    .choice-row.correct .choice-text { color: var(--success); font-weight: 500; }
+
+    .choice-fraction {
+      font-size: 0.7rem; font-family: 'Geist Mono', monospace;
+      font-weight: 600; flex-shrink: 0; margin-top: 4px;
+    }
+    .frac-correct { color: var(--success); }
+    .frac-partial  { color: var(--warn); }
+    .frac-zero    { color: var(--text-faint); }
+
+    .correct-badge {
+      font-size: 0.65rem; font-weight: 700;
+      background: var(--success); color: #fff;
+      padding: 2px 7px; border-radius: 20px; margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .q-feedback {
+      margin-top: 14px; padding: 10px 13px;
+      background: var(--surface-2);
+      border-left: 3px solid var(--accent-mid);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .q-feedback-label {
+      font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;
+    }
+    .q-feedback-text { font-size: 0.82rem; color: var(--text-2); line-height: 1.5; }
+
+    .no-results { text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.88rem; }
+
+    /* Footer */
+    .footer { text-align: center; font-size: 0.72rem; color: var(--text-faint); margin-top: 28px; }
+
+    @media (max-width: 520px) {
+      body { padding: 24px 14px 60px; }
+      .card-body, .card-head { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-icon">📋</div>
+      <div class="brand-text">
+        <h1>Excel → Moodle XML</h1>
+        <p>Quiz converter for Moodle LMS</p>
+      </div>
+    </div>
+    <div class="badge">v2.0</div>
+  </div>
+
+  <!-- Upload -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-head-left">
+        <div class="section-icon si-blue">📁</div>
+        <div>
+          <h2>Upload File</h2>
+          <p>Excel (.xlsx / .xls) quiz file</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="upload-zone" id="uploadArea">
+        <div class="upload-icon-ring" id="uploadIconRing">📁</div>
+        <div class="upload-title" id="uploadTitle">Drop your Excel file here</div>
+        <div class="upload-sub" id="uploadSub">Supports .xlsx and .xls — click or drag to upload</div>
+        <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">Browse File</button>
+        <input type="file" id="fileInput" accept=".xlsx,.xls">
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-head-left">
+        <div class="section-icon si-purple">⚙️</div>
+        <div>
+          <h2>Settings</h2>
+          <p>Configure conversion options</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <label class="field-label" for="categoryInput">Moodle Category Name</label>
+        <input class="field-input" type="text" id="categoryInput" value="Imported from Excel" placeholder="e.g. Math Quiz Chapter 3">
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field">
+        <label class="field-label">Number of Answer Choices</label>
+        <div class="toggle-wrap">
+          <button class="toggle-btn" id="choice4Btn" onclick="setChoiceCount(4)">
+            4 Choices
+            <div class="toggle-sub">A · B · C · D</div>
+          </button>
+          <button class="toggle-btn active" id="choice5Btn" onclick="setChoiceCount(5)">
+            5 Choices
+            <div class="toggle-sub">A · B · C · D · E</div>
+          </button>
+        </div>
+        <div class="cols-box">
+          <div class="cols-box-title">Required Excel column headers</div>
+          <div class="cols-list" id="colsPreview"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Convert -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-head-left">
+        <div class="section-icon si-green">⚡</div>
+        <div>
+          <h2>Convert</h2>
+          <p>Generate Moodle-compatible XML</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-primary btn-full" id="convertBtn" disabled>
+        Convert to Moodle XML
+      </button>
+      <div class="loading-row" id="loading">
+        <div class="spinner"></div>
+        <span class="loading-text">Processing your file…</span>
+      </div>
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div class="card" id="previewCard">
+    <div class="card-head">
+      <div class="card-head-left">
+        <div class="section-icon si-amber">👁️</div>
+        <div>
+          <h2>Question Preview</h2>
+          <p>Review all questions before converting</p>
+        </div>
+      </div>
+      <div class="preview-stats" id="previewStats"></div>
+    </div>
+    <div class="card-body">
+
+      <!-- Filter -->
+      <div class="preview-filter">
+        <input class="search-input" type="text" id="searchInput" placeholder="🔍  Search questions…">
+        <button class="filter-btn active" id="filterAll"     onclick="setFilter('all')">All</button>
+        <button class="filter-btn"        id="filterValid"   onclick="setFilter('valid')">Valid ✓</button>
+        <button class="filter-btn"        id="filterIssue"   onclick="setFilter('issue')">Issues ⚠</button>
+      </div>
+
+      <!-- Nav -->
+      <div class="preview-nav">
+        <button class="btn btn-outline" id="prevBtn" onclick="navigate(-1)">← Prev</button>
+        <span class="nav-info" id="navInfo">— / —</span>
+        <button class="btn btn-outline" id="nextBtn" onclick="navigate(1)">Next →</button>
+      </div>
+
+      <!-- Q Display -->
+      <div id="qDisplay"></div>
+
+    </div>
+  </div>
+
+  <div class="footer">Excel to Moodle XML Converter — for educational use</div>
+</div>
+
+<script>
+  /* ═══ State ═══ */
+  let selectedFile  = null;
+  let choiceCount   = 5;
+  let allQuestions  = [];
+  let filtered      = [];
+  let currentIdx    = 0;
+  let activeFilter  = 'all';
+  let searchQuery   = '';
+  let rawBuffer     = null;
+
+  const LETTERS     = ['A','B','C','D','E'];
+  const LETTER_CLS  = ['ltr-a','ltr-b','ltr-c','ltr-d','ltr-e'];
+
+  /* ═══ Elements ═══ */
+  const fileInput  = document.getElementById('fileInput');
+  const uploadArea = document.getElementById('uploadArea');
+  const convertBtn = document.getElementById('convertBtn');
+  const statusEl   = document.getElementById('status');
+  const loadingEl  = document.getElementById('loading');
+
+  /* ═══ Choice count ═══ */
+  function setChoiceCount(n) {
+    choiceCount = n;
+    document.getElementById('choice4Btn').classList.toggle('active', n === 4);
+    document.getElementById('choice5Btn').classList.toggle('active', n === 5);
+    renderColsPreview();
+    if (rawBuffer) reparse();
+  }
+
+  function renderColsPreview() {
+    const base = ['Name', 'Question*', 'GeneralFeedback', 'DefaultGrade', 'Shuffle'];
+    const cols = [...base];
+    for (let i = 1; i <= choiceCount; i++) cols.push(`Choice${i}*`, `Fraction${i}*`, `ChoiceFeedback${i}`);
+    document.getElementById('colsPreview').innerHTML = cols.map(c => {
+      const req = c.endsWith('*');
+      return `<span class="col-chip ${req ? 'req' : ''}">${c.replace('*','')}</span>`;
+    }).join('');
+  }
+
+  renderColsPreview();
+
+  /* ═══ Drag & Drop ═══ */
+  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+  uploadArea.addEventListener('drop', e => {
+    e.preventDefault(); uploadArea.classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', e => { if (e.target.files.length > 0) handleFile(e.target.files[0]); });
+
+  /* ═══ File ═══ */
+  function handleFile(file) {
+    if (!file.name.match(/\.(xlsx|xls)$/i)) {
+      showStatus('Please select a valid Excel file (.xlsx or .xls)', 'error'); return;
+    }
+    selectedFile = file;
+    uploadArea.classList.add('has-file');
+    document.getElementById('uploadIconRing').textContent = '✅';
+    document.getElementById('uploadTitle').textContent = 'File loaded';
+    document.getElementById('uploadSub').innerHTML = `<span class="file-pill">📄 ${file.name}</span>`;
+    hideStatus();
+
+    const reader = new FileReader();
+    reader.onload = e => { rawBuffer = e.target.result; reparse(); };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function reparse() {
+    try {
+      const wb = XLSX.read(new Uint8Array(rawBuffer), { type: 'array' });
+      const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      if (json.length === 0) throw new Error('File is empty');
+      allQuestions = normalizeData(json);
+      convertBtn.disabled = false;
+      currentIdx = 0;
+      applyFilterAndSearch();
+      document.getElementById('previewCard').classList.add('show');
+      renderStats();
+    } catch(err) {
+      showStatus(`❌ Could not read file: ${err.message}`, 'error');
+      convertBtn.disabled = true;
+    }
+  }
+
+  /* ═══ Stats ═══ */
+  function renderStats() {
+    const valid  = allQuestions.filter(q => !hasIssue(q)).length;
+    const issues = allQuestions.length - valid;
+    document.getElementById('previewStats').innerHTML = `
+      <div class="stat">
+        <div class="stat-val">${allQuestions.length}</div>
+        <div class="stat-lbl">Total</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" style="color:var(--success)">${valid}</div>
+        <div class="stat-lbl">Valid</div>
+      </div>
+      ${issues > 0 ? `<div class="stat">
+        <div class="stat-val" style="color:var(--error)">${issues}</div>
+        <div class="stat-lbl">Issues</div>
+      </div>` : ''}
+    `;
+  }
+
+  function hasIssue(q) {
+    if (!q.Question) return true;
+    for (let i = 1; i <= choiceCount; i++) {
+      if (q[`Choice${i}`] == null || q[`Choice${i}`] === '') return true;
+    }
+    const fracs = [];
+    for (let i = 1; i <= choiceCount; i++) fracs.push(parseFloat(q[`Fraction${i}`]) || 0);
+    return !fracs.some(f => f >= 99.9);
+  }
+
+  /* ═══ Filter & Search ═══ */
+  function setFilter(f) {
+    activeFilter = f;
+    ['filterAll','filterValid','filterIssue'].forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById(f === 'all' ? 'filterAll' : f === 'valid' ? 'filterValid' : 'filterIssue').classList.add('active');
+    currentIdx = 0;
+    applyFilterAndSearch();
+  }
+
+  document.getElementById('searchInput').addEventListener('input', function() {
+    searchQuery = this.value.toLowerCase().trim();
+    currentIdx = 0;
+    applyFilterAndSearch();
+  });
+
+  function applyFilterAndSearch() {
+    filtered = allQuestions.filter(q => {
+      const matchFilter =
+        activeFilter === 'all'   ? true :
+        activeFilter === 'valid' ? !hasIssue(q) :
+                                    hasIssue(q);
+      if (!matchFilter) return false;
+      if (!searchQuery) return true;
+      const haystack = [q.Question, q.Name, ...Array.from({length: choiceCount}, (_,i) => q[`Choice${i+1}`])]
+        .filter(Boolean).join(' ').toLowerCase();
+      return haystack.includes(searchQuery);
+    });
+    if (currentIdx >= filtered.length) currentIdx = Math.max(0, filtered.length - 1);
+    renderCurrentQuestion();
+  }
+
+  /* ═══ Navigation ═══ */
+  function navigate(dir) {
+    currentIdx = Math.max(0, Math.min(filtered.length - 1, currentIdx + dir));
+    renderCurrentQuestion();
+  }
+
+  /* ═══ Render question ═══ */
+  function renderCurrentQuestion() {
+    const display = document.getElementById('qDisplay');
+    const navInfo = document.getElementById('navInfo');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    if (filtered.length === 0) {
+      display.innerHTML = `<div class="no-results">No questions match your filter or search.</div>`;
+      navInfo.textContent = '0 / 0';
+      prevBtn.disabled = true; nextBtn.disabled = true;
+      return;
+    }
+
+    navInfo.textContent = `${currentIdx + 1} / ${filtered.length}`;
+    prevBtn.disabled = currentIdx === 0;
+    nextBtn.disabled = currentIdx === filtered.length - 1;
+
+    const q = filtered[currentIdx];
+    const origIdx = allQuestions.indexOf(q);
+    const fracs = Array.from({length: choiceCount}, (_,i) => parseFloat(q[`Fraction${i+1}`]) || 0);
+    const issue = hasIssue(q);
+    const grade = parseFloat(q.DefaultGrade) || 5.0;
+
+    let choicesHtml = '';
+    for (let i = 0; i < choiceCount; i++) {
+      const text = q[`Choice${i+1}`] || '<em style="color:var(--text-faint)">— empty —</em>';
+      const frac = fracs[i];
+      const isCorrect = frac >= 99.9;
+      const isPartial = frac > 0 && !isCorrect;
+      const rowCls = isCorrect ? 'choice-row correct' : isPartial ? 'choice-row partial' : 'choice-row';
+      const fracCls = isCorrect ? 'frac-correct' : isPartial ? 'frac-partial' : 'frac-zero';
+      const fracLabel = frac !== 0 ? `${frac > 0 ? '+' : ''}${frac}%` : '';
+      const badge = isCorrect ? `<span class="correct-badge">✓ Correct</span>` : '';
+      choicesHtml += `
+        <div class="${rowCls}">
+          <div class="choice-letter ${LETTER_CLS[i]}">${LETTERS[i]}</div>
+          <div class="choice-content">
+            <span class="choice-text">${text}${badge}</span>
+          </div>
+          ${fracLabel ? `<div class="choice-fraction ${fracCls}">${fracLabel}</div>` : ''}
+        </div>`;
+    }
+
+    const feedbackHtml = q.GeneralFeedback ? `
+      <div class="q-feedback">
+        <div class="q-feedback-label">General Feedback</div>
+        <div class="q-feedback-text">${q.GeneralFeedback}</div>
+      </div>` : '';
+
+    display.innerHTML = `
+      <div class="q-card">
+        <div class="q-head">
+          <div class="q-meta">
+            <span class="q-num">Q${origIdx + 1}</span>
+            ${q.Name ? `<span class="q-name-tag">${q.Name}</span>` : ''}
+            <span class="q-grade-tag">⭐ ${grade} pts</span>
+            <span class="status-badge ${issue ? 'badge-issue' : 'badge-valid'}">${issue ? '⚠ Issue' : '✓ Valid'}</span>
+          </div>
+        </div>
+        <div class="q-body">
+          <div class="q-text">${q.Question || '<em style="color:var(--text-faint)">No question text</em>'}</div>
+          <div class="choices-list">${choicesHtml}</div>
+          ${feedbackHtml}
+        </div>
+      </div>`;
+  }
+
+  /* ═══ Convert ═══ */
+  convertBtn.addEventListener('click', convertFile);
+
+  function convertFile() {
+    if (!selectedFile) return;
+    loadingEl.classList.add('show');
+    convertBtn.disabled = true;
+    hideStatus();
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+        const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+        if (json.length === 0) throw new Error('The Excel file appears to be empty');
+        const nd = normalizeData(json);
+        validateData(nd);
+        const categoryName = document.getElementById('categoryInput').value || 'Imported from Excel';
+        downloadXML(generateMoodleXML(nd, categoryName), selectedFile.name.replace(/\.(xlsx|xls)$/i, '.xml'));
+        showStatus(`✅ Successfully converted ${nd.length} question(s). Your Moodle XML file has been downloaded.`, 'success');
+      } catch (err) {
+        showStatus(`❌ ${err.message}`, 'error');
+      } finally {
+        loadingEl.classList.remove('show');
+        convertBtn.disabled = false;
+      }
+    };
+    reader.readAsArrayBuffer(selectedFile);
+  }
+
+  /* ═══ Data ═══ */
+  function normalizeData(data) {
+    return data.map(row => {
+      const n = {};
+      Object.keys(row).forEach(key => {
+        const k = key.toString().trim().toLowerCase().replace(/[\s\-_]+/g, '');
+        if (k === 'name') n.Name = row[key];
+        else if (k === 'question') n.Question = row[key];
+        else if (k === 'generalfeedback') n.GeneralFeedback = row[key];
+        else if (k === 'defaultgrade') n.DefaultGrade = row[key];
+        else if (k === 'shuffle') n.Shuffle = row[key];
+        else for (let i = 1; i <= 5; i++) {
+          if (k === `choice${i}`) n[`Choice${i}`] = row[key];
+          else if (k === `fraction${i}`) n[`Fraction${i}`] = row[key];
+          else if (k === `choicefeedback${i}`) n[`ChoiceFeedback${i}`] = row[key];
+        }
+      });
+      return n;
+    });
+  }
+
+  function validateData(data) {
+    if (data.length === 0) throw new Error('No data found');
+    const req = ['Question'];
+    for (let i = 1; i <= choiceCount; i++) req.push(`Choice${i}`, `Fraction${i}`);
+    const missing = req.filter(c => !(c in data[0]));
+    if (missing.length > 0) throw new Error(`Missing required columns: ${missing.join(', ')}. Make sure column headers match exactly.`);
+  }
+
+  function generateMoodleXML(data, cat) {
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<quiz>\n';
+    xml += `  <question type="category">\n    <category><text>$course$/${escapeXML(cat)}</text></category>\n  </question>\n`;
+    data.forEach((row, i) => { xml += generateQuestionXML(row, i); });
+    return xml + '</quiz>';
+  }
+
+  function generateQuestionXML(row, idx) {
+    const name = row.Name || `Q${idx+1}`;
+    const question = convertMarkupToHTML(row.Question || '');
+    const grade = parseFloat(row.DefaultGrade) || 5.0;
+    const fb = convertMarkupToHTML(row.GeneralFeedback || '');
+    const shuffle = cleanBool(row.Shuffle, true);
+    const fracs = Array.from({length: choiceCount}, (_,i) => parseFloat(row[`Fraction${i+1}`]) || 0);
+    const max = Math.max(...fracs);
+    const single = fracs.filter(f => Math.abs(f-max)<0.000001).length===1 && max>=99.999999;
+
+    let xml = `  <question type="multichoice">
+    <name><text>${escapeXML(name)}</text></name>
+    <questiontext format="html"><text><![CDATA[${question}]]></text></questiontext>
+    <defaultgrade>${grade.toFixed(2)}</defaultgrade>
+    <penalty>0.0</penalty>
+    <single>${single?'true':'false'}</single>
+    <shuffleanswers>${shuffle?'true':'false'}</shuffleanswers>
+    <answernumbering>ABCD</answernumbering>
+    <generalfeedback format="html"><text><![CDATA[${fb}]]></text></generalfeedback>\n`;
+
+    for (let i = 1; i <= choiceCount; i++) {
+      const ct = convertMarkupToHTML(row[`Choice${i}`]||'');
+      const fr = Math.max(-100,Math.min(100,parseFloat(row[`Fraction${i}`])||0));
+      const cf = convertMarkupToHTML(row[`ChoiceFeedback${i}`]||'');
+      xml += `    <answer fraction="${fr}" format="html">\n      <text><![CDATA[${ct}]]></text>\n      <feedback format="html"><text><![CDATA[${cf}]]></text></feedback>\n    </answer>\n`;
+    }
+    return xml + '  </question>\n';
+  }
+
+  /* ═══ Helpers ═══ */
+  function convertMarkupToHTML(text) {
+    if (!text) return '';
+    text = text.toString().replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,'');
+    text = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/\[br\]/g,'\n');
+    text = escapeHTML(text);
+    text = text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+    text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g,'<em>$1</em>');
+    const lines = text.split('\n'); const out=[]; let i=0;
+    while(i<lines.length){
+      const l=lines[i];
+      if(/^\s*-\s+/.test(l)){const it=[];while(i<lines.length&&/^\s*-\s+/.test(lines[i])){it.push(lines[i].replace(/^\s*-\s+/,'').trim());i++;}out.push('<ul>'+it.map(x=>`<li>${x}</li>`).join('')+'</ul>');continue;}
+      if(/^\s*\d+[\.\)]\s+/.test(l)){const it=[];while(i<lines.length&&/^\s*\d+[\.\)]\s+/.test(lines[i])){it.push(lines[i].replace(/^\s*\d+[\.\)]\s+/,'').trim());i++;}out.push('<ol>'+it.map(x=>`<li>${x}</li>`).join('')+'</ol>');continue;}
+      out.push(l);i++;
+    }
+    return out.join('<br/>').replace(/(?:<br\/>\s*){3,}/g,'<br/><br/>');
+  }
+
+  function cleanBool(v,def=true){
+    if(typeof v==='boolean')return v;if(v==null)return def;
+    const s=v.toString().trim().toLowerCase();
+    if(['true','t','1','yes','y'].includes(s))return true;
+    if(['false','f','0','no','n'].includes(s))return false;
+    return def;
+  }
+  function escapeXML(s){if(!s)return'';return s.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');}
+  function escapeHTML(s){if(!s)return'';return s.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');}
+  function downloadXML(content,filename){
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([content],{type:'application/xml'}));
+    a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  }
+  function showStatus(msg,type){statusEl.textContent=msg;statusEl.className=`status show ${type}`;}
+  function hideStatus(){statusEl.className='status';}
+</script>
+</body>
+</html>
