@@ -508,7 +508,7 @@
         <div class="section-icon si-green">⚡</div>
         <div>
           <h2>Convert</h2>
-          <p>Generate Moodle-compatible XML</p>
+          <p>Generate Moodle-compatible XML &nbsp;·&nbsp; <span style="font-family:'Geist Mono',monospace;font-size:0.72rem;color:var(--text-muted)">**bold** &nbsp;*italic* &nbsp;__underline__ &nbsp;- list &nbsp;[br]</span></p>
         </div>
       </div>
     </div>
@@ -885,6 +885,7 @@
     text = escapeHTML(text);
     text = text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
     text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g,'<em>$1</em>');
+    text = text.replace(/__(.+?)__/g,'<u>$1</u>');
     const lines = text.split('\n'); const out=[]; let i=0;
     while(i<lines.length){
       const l=lines[i];
