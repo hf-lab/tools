@@ -508,7 +508,7 @@
         <div class="section-icon si-green">⚡</div>
         <div>
           <h2>Convert</h2>
-          <p>Generate Moodle-compatible XML &nbsp;·&nbsp; <span style="font-family:'Geist Mono',monospace;font-size:0.72rem;color:var(--text-muted)">**bold** &nbsp;*italic* &nbsp;__underline__ &nbsp;- list &nbsp;[br]</span></p>
+          <p>Generate Moodle-compatible XML &nbsp;·&nbsp; <span style="font-family:'Geist Mono',monospace;font-size:0.72rem;color:var(--text-muted)">**bold** &nbsp;*italic* &nbsp;__underline__ &nbsp;**__bold+underline__** &nbsp;- list &nbsp;[br]</span></p>
         </div>
       </div>
     </div>
@@ -871,29 +871,80 @@
     for (let i = 1; i <= choiceCount; i++) {
       const ct = convertMarkupToHTML(row[`Choice${i}`]||'');
       const fr = Math.max(-100,Math.min(100,parseFloat(row[`Fraction${i}`])||0));
-      const cf = convertMarkupToHTML(row[`ChoiceFeedback${i}`]||'');
+      const cf = convertMarkupToHTML(row[`ChoiceFeedback${i}`]||'', false);
       xml += `    <answer fraction="${fr}" format="html">\n      <text><![CDATA[${ct}]]></text>\n      <feedback format="html"><text><![CDATA[${cf}]]></text></feedback>\n    </answer>\n`;
     }
     return xml + '  </question>\n';
   }
 
-  /* ═══ Helpers ═══ */
-  function convertMarkupToHTML(text) {
+  function convertMarkupToHTML(text, wrapP = true) {
     if (!text) return '';
     text = text.toString().replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,'');
     text = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/\[br\]/g,'\n');
-    text = escapeHTML(text);
-    text = text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-    text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g,'<em>$1</em>');
-    text = text.replace(/__(.+?)__/g,'<u>$1</u>');
+
+    // Parse inline markup recursively so nested combos like **__text__** work correctly.
+    // Tokens recognised (greedy-leftmost, non-overlapping):
+    //   **...**  → <strong>
+    //   *...*    → <em>
+    //   __...__  → <span style="text-decoration: underline;">
+    function parseInline(src) {
+      let out = '';
+      let i = 0;
+      while (i < src.length) {
+        // Bold: **
+        if (src[i] === '*' && src[i+1] === '*') {
+          const close = src.indexOf('**', i + 2);
+          if (close !== -1) {
+            out += '<strong>' + parseInline(src.slice(i + 2, close)) + '</strong>';
+            i = close + 2;
+            continue;
+          }
+        }
+        // Italic: * (single, not double)
+        if (src[i] === '*' && src[i+1] !== '*') {
+          // find next lone *
+          let j = i + 1;
+          while (j < src.length) {
+            if (src[j] === '*' && src[j+1] !== '*') break;
+            if (src[j] === '*' && src[j+1] === '*') { j += 2; continue; }
+            j++;
+          }
+          if (j < src.length) {
+            out += '<em>' + parseInline(src.slice(i + 1, j)) + '</em>';
+            i = j + 1;
+            continue;
+          }
+        }
+        // Underline: __
+        if (src[i] === '_' && src[i+1] === '_') {
+          const close = src.indexOf('__', i + 2);
+          if (close !== -1) {
+            out += '<span style="text-decoration: underline;">' + parseInline(src.slice(i + 2, close)) + '</span>';
+            i = close + 2;
+            continue;
+          }
+        }
+        // Plain character — escape HTML entities
+        const ch = src[i];
+        if      (ch === '&') out += '&amp;';
+        else if (ch === '<') out += '&lt;';
+        else if (ch === '>') out += '&gt;';
+        else if (ch === '"') out += '&quot;';
+        else                 out += ch;
+        i++;
+      }
+      return out;
+    }
+
     const lines = text.split('\n'); const out=[]; let i=0;
     while(i<lines.length){
       const l=lines[i];
-      if(/^\s*-\s+/.test(l)){const it=[];while(i<lines.length&&/^\s*-\s+/.test(lines[i])){it.push(lines[i].replace(/^\s*-\s+/,'').trim());i++;}out.push('<ul>'+it.map(x=>`<li>${x}</li>`).join('')+'</ul>');continue;}
-      if(/^\s*\d+[\.\)]\s+/.test(l)){const it=[];while(i<lines.length&&/^\s*\d+[\.\)]\s+/.test(lines[i])){it.push(lines[i].replace(/^\s*\d+[\.\)]\s+/,'').trim());i++;}out.push('<ol>'+it.map(x=>`<li>${x}</li>`).join('')+'</ol>');continue;}
-      out.push(l);i++;
+      if(/^\s*-\s+/.test(l)){const it=[];while(i<lines.length&&/^\s*-\s+/.test(lines[i])){it.push(parseInline(lines[i].replace(/^\s*-\s+/,'').trim()));i++;}out.push('<ul>'+it.map(x=>`<li>${x}</li>`).join('')+'</ul>');continue;}
+      if(/^\s*\d+[\.\)]\s+/.test(l)){const it=[];while(i<lines.length&&/^\s*\d+[\.\)]\s+/.test(lines[i])){it.push(parseInline(lines[i].replace(/^\s*\d+[\.\)]\s+/,'').trim()));i++;}out.push('<ol>'+it.map(x=>`<li>${x}</li>`).join('')+'</ol>');continue;}
+      out.push(parseInline(l));i++;
     }
-    return out.join('<br/>').replace(/(?:<br\/>\s*){3,}/g,'<br/><br/>');
+    const joined = out.join('<br/>').replace(/(?:<br\/>\s*){3,}/g,'<br/><br/>');
+    return wrapP ? `<p>${joined}</p>` : joined;
   }
 
   function cleanBool(v,def=true){
