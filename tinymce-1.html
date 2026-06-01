@@ -71,7 +71,7 @@
         <a class="btn" href="/">Homepage<i class="ki-filled ki-arrow-up"></a>
       </div>
       <div class="out stack">
-        <div class="muted">Rules: <span class="inline-code">&lt;strong/b&gt; → **bold**</span>, <span class="inline-code">&lt;em/i&gt; → *italic*</span>, <span class="inline-code">&lt;ul&gt;&lt;li&gt; → - item</span>, <span class="inline-code">&lt;ol&gt;&lt;li&gt; → 1. item / 1) item</span>, <span class="inline-code">&lt;br&gt; → [br] or \n</span></div>
+        <div class="muted">Rules: <span class="inline-code">&lt;strong/b&gt; → **bold**</span>, <span class="inline-code">&lt;em/i&gt; → *italic*</span>, <span class="inline-code">&lt;u&gt; → __underline__</span>, <span class="inline-code">&lt;ul&gt;&lt;li&gt; → - item</span>, <span class="inline-code">&lt;ol&gt;&lt;li&gt; → 1. item / 1) item</span>, <span class="inline-code">&lt;br&gt; → [br] or \n</span></div>
         <textarea id="output" class="output" placeholder="Converted text will appear here…" readonly></textarea>
       </div>
     </section>
@@ -89,7 +89,7 @@
       statusbar: false,
       height: 520,
       plugins: 'lists advlist link code',
-      toolbar: 'undo redo | bold italic | bullist numlist | removeformat | code',
+      toolbar: 'undo redo | bold italic underline | bullist numlist | removeformat | code',
       content_css: false,
       skin: 'oxide-dark',
       content_style: `body { font:14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color:#3a3a3a; } a { color: #7cc7ff }`,
@@ -162,7 +162,15 @@
         if (tag === 'em' || tag === 'i') {
           return '*' + Array.from(node.childNodes).map(n => serialize(n, ctx)).join('') + '*';
         }
-        if (tag === 'span' || tag === 'a' || tag === 'u' || tag === 'mark' || tag === 'code') {
+        if (tag === 'u') {
+          return '__' + Array.from(node.childNodes).map(n => serialize(n, ctx)).join('') + '__';
+        }
+        if (tag === 'span' || tag === 'a' || tag === 'mark' || tag === 'code') {
+          const style = node.getAttribute('style') || '';
+          // TinyMCE outputs underline as span with text-decoration inline style
+          if (style.includes('text-decoration') && style.includes('underline')) {
+            return '__' + Array.from(node.childNodes).map(n => serialize(n, ctx)).join('') + '__';
+          }
           // Ignore extra inline styles; keep plain text (or link text only)
           return Array.from(node.childNodes).map(n => serialize(n, ctx)).join('');
         }
