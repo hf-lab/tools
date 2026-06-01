@@ -167,12 +167,11 @@
         }
         if (tag === 'span' || tag === 'a' || tag === 'mark' || tag === 'code') {
           const style = node.getAttribute('style') || '';
-          // TinyMCE outputs underline as span with text-decoration inline style
-          if (style.includes('text-decoration') && style.includes('underline')) {
-            return '__' + Array.from(node.childNodes).map(n => serialize(n, ctx)).join('') + '__';
-          }
-          // Ignore extra inline styles; keep plain text (or link text only)
-          return Array.from(node.childNodes).map(n => serialize(n, ctx)).join('');
+          const inner = Array.from(node.childNodes).map(n => serialize(n, ctx)).join('');
+          // TinyMCE outputs underline as text-decoration: underline (may be combined with other values)
+          const isUnderline = /text-decoration\s*:[^;]*underline/i.test(style);
+          if (isUnderline) return '__' + inner + '__';
+          return inner;
         }
 
         // Block handling
@@ -247,6 +246,8 @@
         .replace(/\n{3,}/g, '\n\n')
         .replace(/[ \t]+\n/g, '\n')
         .trim();
+      // Collapse adjacent __ pairs with only whitespace between them (e.g. from split spans)
+      result = result.replace(/__(\s*)__/g, (_, ws) => ws || '');
 
       outputEl.value = result;
     }
